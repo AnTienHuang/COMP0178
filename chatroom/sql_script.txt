@@ -1,0 +1,25 @@
+#DROP DATABASE chatroom;
+
+CREATE DATABASE chatroom
+  DEFAULT CHARACTER SET utf8
+  DEFAULT COLLATE utf8_general_ci;
+  
+#DROP USER 'chatadmin'@'localhost';
+#FLUSH PRIVILEGES;
+  
+CREATE USER 'chatadmin'@'localhost'
+	IDENTIFIED BY 'adminpassword';
+
+GRANT SELECT, UPDATE, INSERT, DELETE
+    ON chatroom.*
+    TO 'chatadmin'@'localhost';
+
+USE chatroom;
+
+CREATE TABLE messages
+(
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  user VARCHAR(50) NOT NULL,
+  message TEXT NOT NULL,
+  time TIME NOT NULL
+);
