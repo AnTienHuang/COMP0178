@@ -7,7 +7,7 @@ CREATE TABLE Item
   title VARCHAR(255) NOT NULL,
   description VARCHAR(255),
   status VARCHAR(20) NOT NULL,
-  CONSTRAINT check_status CHECK (status IN ('Open', 'Closed-Won', 'Closed-No-bid'))
+  CONSTRAINT check_status CHECK (status IN ('Open', 'Closed-Won', 'Closed-No-bid')) 
   category VARCHAR(40) NOT NULL,
   CONSTRAINT category CHECK (status IN ('Consumable', 'Home Accessory', 'Kitchenware', 'Technology'))
   startTime datetime NOT NULL,
