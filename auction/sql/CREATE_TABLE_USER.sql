@@ -9,5 +9,4 @@ CREATE TABLE User
   email VARCHAR(40) NOT NULL,
   isSeller BOOLEAN NOT NULL
 )
-
 ENGINE = InnoDB;
