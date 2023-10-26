@@ -10,3 +10,9 @@ CREATE TABLE User
   isSeller BOOLEAN NOT NULL
 )
 ENGINE = InnoDB;
+
+-- INSERT INTO Users (username, password) VALUES
+-- ('someone', SHA('password'))
+
+-- SELECT username FROM Users WHERE username =
+-- '$user' AND password = SHA('$password')
