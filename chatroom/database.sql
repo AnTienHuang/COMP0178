@@ -27,6 +27,6 @@ bidID int NOT NULL,
 buyerID int NOT NULL,
 itemID int NOT NULL,
 price double NOT NULL,
-status varchar(10) NOT NULL,aa
+status varchar(10) NOT NULL,
 bidDate datetime NOT NULL);
 
