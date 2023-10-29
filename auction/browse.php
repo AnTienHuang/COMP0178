@@ -1,6 +1,16 @@
 <?php include_once("header.php")?>
 <?php require("utilities.php")?>
 
+<?php include("db.php")?>
+<?php
+  if($con){
+    echo"connected";
+  }
+  else{
+    echo"not connected";
+  }
+?>
+
 <div class="container">
 
 <h2 class="my-3">Browse listings</h2>
