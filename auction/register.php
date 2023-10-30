@@ -22,21 +22,21 @@
   <div class="form-group row">
     <label for="email" class="col-sm-2 col-form-label text-right">Email</label>
 	<div class="col-sm-10">
-      <input type="text" class="form-control" id="email" placeholder="Email">
+      <input type="text" class="form-control" name="email" placeholder="Email" required>
       <small id="emailHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
 	</div>
   </div>
   <div class="form-group row">
     <label for="password" class="col-sm-2 col-form-label text-right">Password</label>
     <div class="col-sm-10">
-      <input type="password" class="form-control" id="password" placeholder="Password">
+      <input type="password" class="form-control" name="password" placeholder="Password" required>
       <small id="passwordHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
     </div>
   </div>
   <div class="form-group row">
     <label for="passwordConfirmation" class="col-sm-2 col-form-label text-right">Repeat password</label>
     <div class="col-sm-10">
-      <input type="password" class="form-control" id="passwordConfirmation" placeholder="Enter password again">
+      <input type="password" class="form-control" name="passwordConfirmation" placeholder="Enter password again" required>
       <small id="passwordConfirmationHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
     </div>
   </div>
@@ -45,8 +45,14 @@
   </div>
 </form>
 
+<!-- error for required fields -->
+<?php if(isset($_GET['error'])): ?>
+  <div class = "error" ><?php echo $_GET['error']; ?></div>
+<?php endif; ?>
+
 <div class="text-center">Already have an account? <a href="" data-toggle="modal" data-target="#loginModal">Login</a>
 
 </div>
+
 
 <?php include_once("footer.php")?>
