@@ -66,7 +66,7 @@
                 header("Location: reg_success.php");
                 exit();
             }
-            catch(mysqli_sql_exception){
+            catch(mysqli_sql_exceptiono $e){
                 $error = "Invalid user input, please check.";
                 header("Location: register.php?error=" . urldecode($error));
                 exit();
