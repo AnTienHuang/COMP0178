@@ -204,5 +204,6 @@
 </div>
 
 
+<?php mysqli_close($con); ?>
 
 <?php include_once("footer.php")?>

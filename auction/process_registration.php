@@ -74,5 +74,6 @@
         }
         // echo"Is valid: {$valid}";
     }
+    mysqli_close($con);
 
 ?>
