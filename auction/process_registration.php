@@ -16,9 +16,9 @@
         $last_name = mysqli_real_escape_string($con, $_POST['lastname']);
         $valid = true;
 
-        foreach($_POST as $key => $value){
-            echo"{$key} = {$value} <br>";
-        }
+        // foreach($_POST as $key => $value){
+        //     echo"{$key} = {$value} <br>";
+        // }
         # check if there are missing values
             // (Done in the form)
 
@@ -72,7 +72,7 @@
                 exit();
             }
         }
-        echo"Is valid: {$valid}";
+        // echo"Is valid: {$valid}";
     }
 
 ?>
