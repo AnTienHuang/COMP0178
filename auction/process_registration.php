@@ -9,11 +9,14 @@
     if (isset($_POST['accountType'])){
         
         $account_type = $_POST['accountType'];
-        $email = mysqli_real_escape_string($connection, $_POST['email']);
-        $password = mysqli_real_escape_string($connection, $_POST['password']);
+        $email = mysqli_real_escape_string($con, $_POST['email']);
+        $password = mysqli_real_escape_string($con, $_POST['password']);
 
         $is_valid = true;
 
+        foreach($_POST as $key => $value){
+            echo"{$key} = {$value} <br>";
+        }
         # check if there are missing values
             // (Done in the form)
             //
@@ -27,12 +30,18 @@
 
 
         # check if user exists
-        $query = "SELECT userId
+        $query = "SELECT *
                     FROM User
-                    WHERE userId = ''";
+                    WHERE email = '$email'";
+        // $q2 = "SELECT * from user"; 
+        $users = mysqli_query($con, $query);
+        foreach ($users as $user) {
+            printf("User ID: %s \n", $user["userId"]);
+            printf("User Email: %s \n", $user["email"]);
+            echo"<br>";
+        }
 
-        $user = $mysqli->query("SELECT id FROM test ORDER BY id ASC");
-
+        printf("Select returned %d rows.\n", $users->num_rows);
         $error = "User already exists";
         # check if passwords are the same
 
