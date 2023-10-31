@@ -10,14 +10,14 @@
         $db_user,
         $db_password,
         $db_name
-    );
+    ) or die('Error connecting to MySQL server.' . mysql_error());
 
-    if($con){
-        echo"connected";
-      }
-      else{
-        echo"not connected";
-      }
+    // if($con){
+    //     echo"connected";
+    //   }
+    //   else{
+    //     echo"not connected";
+    //   }
     // }
     // catch(){
     //     echo"there is an error"

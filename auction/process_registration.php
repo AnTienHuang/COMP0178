@@ -26,7 +26,7 @@
         $query = "SELECT *
                     FROM User
                     WHERE email = '$email'";
-        $users = mysqli_query($con, $query);
+        $users = mysqli_query($con, $query) or die('Error making select users query' . mysql_error());
         $row_cnt = mysqli_num_rows($users);
         // [DEBUG]
             // printf("Select returned %d rows.\n", $row_cnt);
@@ -62,7 +62,7 @@
             try{
                 $insert = "INSERT INTO User (firstName, lastName, password, email, isSeller)
                 VALUES ('$first_name', '$last_name', '$hash', '$email', '$is_seller')";
-                mysqli_query($con, $insert);
+                $res = mysqli_query($con, $insert);
                 header("Location: reg_success.php");
                 exit();
             }
