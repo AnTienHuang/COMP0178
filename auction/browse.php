@@ -2,14 +2,7 @@
 <?php require("utilities.php")?>
 
 <?php include("db.php")?>
-<?php
-  if($con){
-    echo"connected";
-  }
-  else{
-    echo"not connected";
-  }
-?>
+
 
 <div class="container">
 
