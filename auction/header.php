@@ -6,12 +6,12 @@
   session_start();
   // $_SESSION['logged_in'] = false;
   // $_SESSION['account_type'] = 'seller';
-  echo "logged_in: ".$_SESSION["logged_in"];
-  echo"<br>";
-  echo "account_type: ".$_SESSION['account_type'];
-  echo"<br>";
-  echo "name: ".$_SESSION['name'];
-  echo"<br>";
+  // echo "logged_in: ".$_SESSION["logged_in"];
+  // echo"<br>";
+  // echo "account_type: ".$_SESSION['account_type'];
+  // echo"<br>";
+  // echo "name: ".$_SESSION['name'];
+  // echo"<br>";
 ?>
 
 
@@ -28,7 +28,7 @@
   <!-- Custom CSS file -->
   <link rel="stylesheet" href="css/custom.css">
 
-  <title>[My Auction Site] <!--CHANGEME!--></title>
+  <title>ebey</title>
 </head>
 
 
@@ -36,7 +36,7 @@
 
 <!-- Navbars -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mx-2">
-  <a class="navbar-brand" href="#">Site Name <!--CHANGEME!--></a>
+  <a class="navbar-brand" href="#">eBey<!--CHANGEME!--></a>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
     
@@ -44,6 +44,7 @@
   // Displays either login or logout on the right, depending on user's
   // current status (session).
   if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
+    echo 'Hi '.$_SESSION['name']."!";
     echo '<a class="nav-link" href="logout.php">Logout</a>';
   }
   else {
@@ -60,7 +61,7 @@
       <a class="nav-link" href="browse.php">Browse</a>
     </li>
 <?php
-  if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer') {
+  if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Buyer') {
   echo('
 	<li class="nav-item mx-1">
       <a class="nav-link" href="mybids.php">My Bids</a>
@@ -69,7 +70,7 @@
       <a class="nav-link" href="recommendations.php">Recommended</a>
     </li>');
   }
-  if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'seller') {
+  if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Seller') {
   echo('
 	<li class="nav-item mx-1">
       <a class="nav-link" href="mylistings.php">My Listings</a>
