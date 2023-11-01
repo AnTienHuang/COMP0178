@@ -49,7 +49,7 @@ if(isset($_POST['email']) && isset($_POST['password'])){
             if(password_verify($pass, $row['password'])){
                 $_SESSION['logged_in'] = true;
                 $_SESSION['name'] = $row['firstName'];
-                $_SESSION['account_type'] = $row['']"buyer";
+                $_SESSION['account_type'] = $row['accountType'];
                 // echo"aa";        
             }
         }

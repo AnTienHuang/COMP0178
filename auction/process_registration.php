@@ -55,13 +55,13 @@
         else{
             #insert user record to DB
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $is_seller = 0;
-            if($account_type == "Seller"){
-                $is_seller = 1;
-            }
+            // $is_seller = 0;
+            // if($account_type == "Seller"){
+            //     $is_seller = 1;
+            // }
             try{
                 $insert = "INSERT INTO User (firstName, lastName, password, email, isSeller)
-                VALUES ('$first_name', '$last_name', '$hash', '$email', '$is_seller')";
+                VALUES ('$first_name', '$last_name', '$hash', '$email', '$account_type')";
                 $res = mysqli_query($con, $insert);
                 header("Location: reg_success.php");
                 exit();
