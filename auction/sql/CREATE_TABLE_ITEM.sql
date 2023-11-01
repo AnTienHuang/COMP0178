@@ -4,7 +4,8 @@ CREATE TABLE Item
 (
   itemId INTEGER AUTO_INCREMENT PRIMARY KEY,
   sellerId INTEGER,
-  FOREIGN KEY (sellerId) REFERENCES User(userId),
+  FOREIGN KEY (sellerId) REFERENCES User(userId)
+    ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
   description VARCHAR(255),
   itemStatus VARCHAR(20) NOT NULL,
