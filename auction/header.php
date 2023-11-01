@@ -6,6 +6,12 @@
   session_start();
   // $_SESSION['logged_in'] = false;
   // $_SESSION['account_type'] = 'seller';
+  echo "logged_in: ".$_SESSION["logged_in"];
+  echo"<br>";
+  echo "account_type: ".$_SESSION['account_type'];
+  echo"<br>";
+  echo "name: ".$_SESSION['name'];
+  echo"<br>";
 ?>
 
 

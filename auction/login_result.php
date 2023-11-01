@@ -50,7 +50,7 @@ if(isset($_POST['email']) && isset($_POST['password'])){
                 $_SESSION['logged_in'] = true;
                 $_SESSION['name'] = $row['firstName'];
                 $_SESSION['account_type'] = $row['accountType'];
-                // echo"aa";        
+                echo"aa";        
             }
         }
         else{
@@ -70,7 +70,7 @@ if(isset($_POST['email']) && isset($_POST['password'])){
 echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
 
 // Redirect to index after 5 seconds
-// header("refresh:5;url=index.php");
+header("refresh:5;url=index.php");
 mysqli_close($con);
 ?>
 
