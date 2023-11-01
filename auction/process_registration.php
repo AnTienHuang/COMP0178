@@ -63,8 +63,8 @@
                 $insert = "INSERT INTO User (firstName, lastName, password, email, accountType)
                 VALUES ('$first_name', '$last_name', '$hash', '$email', '$account_type')";
                 $res = mysqli_query($con, $insert);
-                // header("Location: reg_success.php");
-                // exit();
+                header("Location: reg_success.php");
+                exit();
             }
             catch(mysqli_sql_exception $e){
                 $error = "Invalid user input, please check.";
