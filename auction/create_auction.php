@@ -1,13 +1,11 @@
 <?php include_once("header.php")?>
 
 <?php
-/* (Uncomment this block to redirect people without selling privileges away from this page)
   // If user is not logged in or not a seller, they should not be able to
   // use this page.
   if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') {
     header('Location: browse.php');
   }
-*/
 ?>
 
 <div class="container">
