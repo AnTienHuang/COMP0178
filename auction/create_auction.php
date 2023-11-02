@@ -1,6 +1,7 @@
 <?php include_once("header.php")?>
 
 <?php
+  include "db.php";
   // If user is not logged in or not a seller, they should not be able to
   // use this page.
   if (!isset($_SESSION['account_type']) || $_SESSION['account_type'] != 'seller') {
@@ -41,10 +42,16 @@
           <label for="auctionCategory" class="col-sm-2 col-form-label text-right">Category</label>
           <div class="col-sm-10">
             <select class="form-control" id="auctionCategory">
-              <option selected>Choose...</option>
+            <?php 
+                $result=mysqli_query($con,'SELECT id,name FROM category'); 
+                while($row=mysqli_fetch_assoc($result)) { 
+                    echo "<option value='$row[id]'>$row[name]</option>"; 
+                } 
+            ?> 
+              <!-- <option selected>Choose...</option>
               <option value="fill">Fill me in</option>
               <option value="with">with options</option>
-              <option value="populated">populated from a database?</option>
+              <option value="populated">populated from a database?</option> -->
             </select>
             <small id="categoryHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Select a category for this item.</small>
           </div>
