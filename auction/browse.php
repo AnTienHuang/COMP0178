@@ -1,7 +1,12 @@
 <?php include_once("header.php")?>
 <?php require("utilities.php")?>
 
-<?php include("db.php")?>
+<?php 
+    include("db.php");
+    ini_set('display_errors','On');
+    ini_set('error_reporting',E_ALL);
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+?>
 
 
 <div class="container">
@@ -31,10 +36,13 @@
       <div class="form-group">
         <label for="cat" class="sr-only">Search within:</label>
         <select class="form-control" id="cat">
-          <option selected value="all">All categories</option>
-          <option value="fill">Fill me in</option>
-          <option value="with">with options</option>
-          <option value="populated">populated from a database?</option>
+          <option value=""> Search in all category </option>
+          <?php 
+              $result=mysqli_query($con,'SELECT id,name FROM category'); 
+              while($row=mysqli_fetch_assoc($result)) { 
+                  echo "<option value='$row[id]'>$row[name]</option>"; 
+              } 
+          ?> 
         </select>
       </div>
     </div>
@@ -62,23 +70,29 @@
   // Retrieve these from the URL
   if (!isset($_GET['keyword'])) {
     // TODO: Define behavior if a keyword has not been specified.
+    $keyword_condition = '';
   }
   else {
     $keyword = $_GET['keyword'];
+    $keyword_condition = "AND i.title LIKE '%{$keyword}%'";
   }
 
   if (!isset($_GET['cat'])) {
     // TODO: Define behavior if a category has not been specified.
+    $category_condition = '';
   }
   else {
-    $category = $_GET['cat'];
+    $category_id = $_GET['cat'];
+    $category_condition = "AND ic.categoryId = {$category_id}";
   }
   
   if (!isset($_GET['order_by'])) {
     // TODO: Define behavior if an order_by value has not been specified.
+    $order_by_condition = '';
   }
   else {
-    $ordering = $_GET['order_by'];
+    $order_by = $_GET['order_by'];
+    $order_by_condition = "ORDER BY {$order_by}";
   }
   
   if (!isset($_GET['page'])) {
@@ -89,14 +103,50 @@
   }
 
   /* TODO: Use above values to construct a query. Use this query to 
-     retrieve data from the database. (If there is no form data entered,
-     decide on appropriate default value/default query to make. */
+  retrieve data from the database. (If there is no form data entered,
+  decide on appropriate default value/default query to make. */
+  $q = "SELECT 
+        i.title,
+        i.description,
+        i.endTime,
+        ic.itemId,
+        ic.categoryId,
+        c.name AS category_name,
+        COUNT(bid.Id) AS num_of_bids,
+        MAX(b.price) AS highest_bid_price
+        FROM Item_Category ic
+        JOIN Category c ON ic.categoryId = c.id
+        LEFT JOIN (
+          SELECT itemId, MAX(price) AS price
+          FROM Bid
+          GROUP BY itemId
+        ) b ON ic.itemId = b.itemId
+        LEFT JOIN (
+          SELECT *
+          FROM item
+        ) i ON ic.itemId = i.id
+        LEFT JOIN Bid bid ON i.id = bid.itemId
+        WHERE i.itemStatus = 'Open' $keyword_condition $category_condition 
+        GROUP BY ic.itemId, ic.categoryId, c.name
+        $order_by_condition
+  ";
+
+  $items = mysqli_query($con, $q);
+  $row_num = mysqli_num_rows($items);
+  if(mysqli_num_rows($items) == 0){
+    echo"There is no aution created yet.";
+    exit();
+  }
+  elseif(!$items){
+    echo"There is an error when querying items";
+  }
+  else {
+    $results_per_page = 10;
+    $max_page = ceil($row_num / $results_per_page);
+  }
   
   /* For the purposes of pagination, it would also be helpful to know the
      total number of results that satisfy the above query */
-  $num_results = 96; // TODO: Calculate me for real
-  $results_per_page = 10;
-  $max_page = ceil($num_results / $results_per_page);
 ?>
 
 <div class="container mt-5">
@@ -108,30 +158,32 @@
 <!-- TODO: Use a while loop to print a list item for each auction listing
      retrieved from the query -->
 
-<?php
-  // Demonstration of what listings will look like using dummy data.
-  $item_id = "87021";
-  $title = "Dummy title";
-  $description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget rutrum ipsum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus feugiat, ipsum vel egestas elementum, sem mi vestibulum eros, et facilisis dui nisi eget metus. In non elit felis. Ut lacus sem, pulvinar ultricies pretium sed, viverra ac sapien. Vivamus condimentum aliquam rutrum. Phasellus iaculis faucibus pellentesque. Sed sem urna, maximus vitae cursus id, malesuada nec lectus. Vestibulum scelerisque vulputate elit ut laoreet. Praesent vitae orci sed metus varius posuere sagittis non mi.";
-  $current_price = 30;
-  $num_bids = 1;
-  $end_date = new DateTime('2020-09-16T11:00:00');
-  
-  // This uses a function defined in utilities.php
-  print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
-  
-  $item_id = "516";
-  $title = "Different title";
-  $description = "Very short description.";
-  $current_price = 13.50;
-  $num_bids = 3;
-  $end_date = new DateTime('2020-11-02T00:00:00');
-  
-  print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
-?>
-
 </ul>
-
+    <?php 
+        while($row = mysqli_fetch_assoc($items)) : 
+            $item_id = $row['itemId'];
+            $title = $row['title'];  
+            $description = $row['description'];  
+            $current_price = $row['highest_bid_price'];  
+            $num_bids = $row['num_of_bids'];  
+            $end_date = $row['endTime'];  
+            // $end_date = date_create($row['endTime']);
+            print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+            // echo"end_date: ".$end_date."<br>";
+            // $now = new DateTime();
+            // echo"now: <br>";
+            // $result = $now->format('Y-m-d H:i:s');
+            // echo $result;
+            // if($now > $end_date){
+            //   $aaa = ">";
+            // }
+            // else{
+            //   $aaa = "<";
+            // }
+            // echo $aaa;
+        endwhile;
+    ?>
+    
 <!-- Pagination for results listings -->
 <nav aria-label="Search results pages" class="mt-5">
   <ul class="pagination justify-content-center">
@@ -195,8 +247,9 @@
 
 
 </div>
+<?php 
 
-
+?>
 <?php mysqli_close($con); ?>
 
 <?php include_once("footer.php")?>
