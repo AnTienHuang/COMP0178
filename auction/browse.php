@@ -28,14 +28,14 @@
               <i class="fa fa-search"></i>
             </span>
           </div>
-          <input type="text" class="form-control border-left-0" id="keyword" placeholder="Search for anything">
+          <input type="text" class="form-control border-left-0" name="keyword" placeholder="Search for anything">
         </div>
       </div>
     </div>
     <div class="col-md-3 pr-0">
       <div class="form-group">
         <label for="cat" class="sr-only">Search within:</label>
-        <select class="form-control" id="cat">
+        <select class="form-control" name="cat">
           <option value=""> Search in all category </option>
           <?php 
               $result=mysqli_query($con,'SELECT id,name FROM category'); 
@@ -49,10 +49,10 @@
     <div class="col-md-3 pr-0">
       <div class="form-inline">
         <label class="mx-2" for="order_by">Sort by:</label>
-        <select class="form-control" id="order_by">
-          <option selected value="pricelow">Price (low to high)</option>
-          <option value="pricehigh">Price (high to low)</option>
-          <option value="date">Soonest expiry</option>
+        <select class="form-control" name="order_by">
+          <option selected value="highest_bid_price asc">Price (low to high)</option>
+          <option value="highest_bid_price desc">Price (high to low)</option>
+          <option value="endTime asc">Soonest expiry</option>
         </select>
       </div>
     </div>
@@ -68,7 +68,7 @@
 
 <?php
   // Retrieve these from the URL
-  if (!isset($_GET['keyword'])) {
+  if (empty($_GET['keyword'])) {
     // TODO: Define behavior if a keyword has not been specified.
     $keyword_condition = '';
   }
@@ -77,7 +77,7 @@
     $keyword_condition = "AND i.title LIKE '%{$keyword}%'";
   }
 
-  if (!isset($_GET['cat'])) {
+  if (empty($_GET['cat'])) {
     // TODO: Define behavior if a category has not been specified.
     $category_condition = '';
   }
@@ -86,7 +86,7 @@
     $category_condition = "AND ic.categoryId = {$category_id}";
   }
   
-  if (!isset($_GET['order_by'])) {
+  if (empty($_GET['order_by'])) {
     // TODO: Define behavior if an order_by value has not been specified.
     $order_by_condition = '';
   }
@@ -126,15 +126,16 @@
           FROM item
         ) i ON ic.itemId = i.id
         LEFT JOIN Bid bid ON i.id = bid.itemId
-        WHERE i.itemStatus = 'Open' $keyword_condition $category_condition 
+        WHERE i.itemStatus = 'Open' {$keyword_condition} {$category_condition} 
         GROUP BY ic.itemId, ic.categoryId, c.name
-        $order_by_condition
+        {$order_by_condition}
   ";
 
+  // echo"{$q}";
   $items = mysqli_query($con, $q);
   $row_num = mysqli_num_rows($items);
   if(mysqli_num_rows($items) == 0){
-    echo"There is no aution created yet.";
+    echo"<br> <p>There is no aution created yet.</p>";
     exit();
   }
   elseif(!$items){
@@ -167,20 +168,7 @@
             $current_price = $row['highest_bid_price'];  
             $num_bids = $row['num_of_bids'];  
             $end_date = $row['endTime'];  
-            // $end_date = date_create($row['endTime']);
             print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
-            // echo"end_date: ".$end_date."<br>";
-            // $now = new DateTime();
-            // echo"now: <br>";
-            // $result = $now->format('Y-m-d H:i:s');
-            // echo $result;
-            // if($now > $end_date){
-            //   $aaa = ">";
-            // }
-            // else{
-            //   $aaa = "<";
-            // }
-            // echo $aaa;
         endwhile;
     ?>
     
