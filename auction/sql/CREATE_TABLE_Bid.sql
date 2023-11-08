@@ -16,3 +16,6 @@ CREATE TABLE Bid
 )
 
 ENGINE = InnoDB;
+
+-- INSERT INTO Bid (bidStatus, bidTime, buyerId, itemId, price)
+-- VALUES ('Winning', '2023-11-06 22:16:17', 1, 15, 5000)

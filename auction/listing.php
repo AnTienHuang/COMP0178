@@ -1,36 +1,78 @@
-<?php include_once("header.php")?>
-<?php require("utilities.php")?>
+<?php 
+    include_once("header.php");
+    require("utilities.php");
+    include("db.php");
+    ini_set('display_errors','On');
+    ini_set('error_reporting',E_ALL);
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-<?php
-  // Get info from the URL:
-  $item_id = $_GET['item_id'];
+    // Get info from the URL:
+    $item_id = $_GET['item_id'];
 
-  // TODO: Use item_id to make a query to the database.
-
-  // DELETEME: For now, using placeholder data.
-  $title = "Placeholder title";
-  $description = "Description blah blah blah";
-  $current_price = 30.50;
-  $num_bids = 1;
-  $end_time = new DateTime('2020-11-02T00:00:00');
-
-  // TODO: Note: Auctions that have ended may pull a different set of data,
-  //       like whether the auction ended in a sale or was cancelled due
-  //       to lack of high-enough bids. Or maybe not.
-  
-  // Calculate time to auction end:
-  $now = new DateTime();
-  
-  if ($now < $end_time) {
-    $time_to_end = date_diff($now, $end_time);
-    $time_remaining = ' (in ' . display_time_remaining($time_to_end) . ')';
-  }
-  
-  // TODO: If the user has a session, use it to make a query to the database
-  //       to determine if the user is already watching this item.
-  //       For now, this is hardcoded.
-  $has_session = true;
-  $watching = false;
+    // TODO: Use item_id to make a query to the database.
+    $q = "SELECT 
+              main.itemId, 
+              main.categoryId, 
+              main.category_name, 
+              main.highest_bid_price, 
+              main.num_of_bids, 
+              main.title,
+              main.description,
+              main.endTime,
+              main.startingPrice,
+              u.firstName AS leading_buyer_first_name, 
+              u.lastName AS leading_buyer_last_name
+          FROM (
+              SELECT 
+                  ic.itemId, 
+                  ic.categoryId, 
+                  c.name AS category_name, 
+                  MAX(b.price) AS highest_bid_price, 
+                  COUNT(b.id) AS num_of_bids,
+                  i.title,
+                  i.description,
+                  i.endTime,
+                  MAX(b.id) AS max_bid_id,
+                  i.startingPrice
+              FROM Item_Category ic
+              JOIN Category c ON ic.categoryId = c.id
+              JOIN Item i ON ic.itemId = i.id
+              LEFT JOIN Bid b ON i.id = b.itemId
+              WHERE i.Id = $item_id
+              GROUP BY ic.itemId, ic.categoryId, c.name
+              ORDER BY highest_bid_price DESC
+          ) AS main
+          LEFT JOIN Bid b ON main.max_bid_id = b.id
+          LEFT JOIN User u ON b.buyerId = u.id
+          ";
+    $items = mysqli_query($con, $q);
+    $row_num = mysqli_num_rows($items);
+    while($row = mysqli_fetch_assoc($items)) : 
+      $item_id = $row['itemId'];
+      $title = $row['title'];  
+      $description = $row['description'];  
+      $current_price = $row['highest_bid_price'];  
+      $num_bids = $row['num_of_bids'];  
+      $end_time = $row['endTime'];  
+      $leading_buyer_name = $row['leading_buyer_first_name'] . " " . $row['leading_buyer_last_name'];
+      $starting_price = $row['startingPrice'];
+  endwhile;
+    // TODO: Note: Auctions that have ended may pull a different set of data,
+    //       like whether the auction ended in a sale or was cancelled due
+    //       to lack of high-enough bids. Or maybe not.
+    
+    // Calculate time to auction end:
+    $now = new DateTime();
+    $end_time_formatted = date_create($end_time);
+    if ($now < $end_time_formatted) {
+      $time_remaining = ' (' . display_time_remaining($end_time) . ')';
+    }
+    
+    // TODO: If the user has a session, use it to make a query to the database
+    //       to determine if the user is already watching this item.
+    //       For now, this is hardcoded.
+    $has_session = true;
+    $watching = false;
 ?>
 
 
@@ -44,7 +86,7 @@
 <?php
   /* The following watchlist functionality uses JavaScript, but could
      just as easily use PHP as in other places in the code */
-  if ($now < $end_time):
+  if ($now < $end_time_formatted):
 ?>
     <div id="watch_nowatch" <?php if ($has_session && $watching) echo('style="display: none"');?> >
       <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist()">+ Add to watchlist</button>
@@ -69,12 +111,14 @@
   <div class="col-sm-4"> <!-- Right col with bidding info -->
 
     <p>
-<?php if ($now > $end_time): ?>
-     This auction ended <?php echo(date_format($end_time, 'j M H:i')) ?>
+<?php if ($now > $end_time_formatted): ?>
+     This auction ended <?php echo"{$end_time_formatted}" ?>
+     
      <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
-     Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
-    <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
+     Auction ends <?php echo"{$end_time} <br> {$time_remaining}" ?></p>  
+     <p class="lead">Starting price: £<?php echo(number_format($starting_price, 2)); ?></p>
+     <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)); echo" by " . $leading_buyer_name ?></p>
 
     <!-- Bidding form -->
     <form method="POST" action="place_bid.php">
@@ -82,7 +126,11 @@
         <div class="input-group-prepend">
           <span class="input-group-text">£</span>
         </div>
-	    <input type="number" class="form-control" id="bid">
+      <input type="hidden" name="item_id" value="<?php echo $item_id; ?>">
+      <input type="hidden" name="current_price" value="<?php echo $current_price; ?>">
+      <input type="hidden" name="starting_price" value="<?php echo $starting_price; ?>">
+      <input type="hidden" name="end_time" value="<?php echo $end_time; ?>">
+	    <input type="number" class="form-control" name="new_bid_price">
       </div>
       <button type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
@@ -95,75 +143,76 @@
 
 
 
+<?php mysqli_close($con); ?>
 <?php include_once("footer.php")?>
 
 
 <script> 
-// JavaScript functions: addToWatchlist and removeFromWatchlist.
+  // JavaScript functions: addToWatchlist and removeFromWatchlist.
 
-function addToWatchlist(button) {
-  console.log("These print statements are helpful for debugging btw");
+  function addToWatchlist(button) {
+    console.log("These print statements are helpful for debugging btw");
 
-  // This performs an asynchronous call to a PHP function using POST method.
-  // Sends item ID as an argument to that function.
-  $.ajax('watchlist_funcs.php', {
-    type: "POST",
-    data: {functionname: 'add_to_watchlist', arguments: [<?php echo($item_id);?>]},
+    // This performs an asynchronous call to a PHP function using POST method.
+    // Sends item ID as an argument to that function.
+    $.ajax('watchlist_funcs.php', {
+      type: "POST",
+      data: {functionname: 'add_to_watchlist', arguments: [<?php echo($item_id);?>]},
 
-    success: 
-      function (obj, textstatus) {
-        // Callback function for when call is successful and returns obj
-        console.log("Success");
-        var objT = obj.trim();
- 
-        if (objT == "success") {
-          $("#watch_nowatch").hide();
-          $("#watch_watching").show();
+      success: 
+        function (obj, textstatus) {
+          // Callback function for when call is successful and returns obj
+          console.log("Success");
+          var objT = obj.trim();
+  
+          if (objT == "success") {
+            $("#watch_nowatch").hide();
+            $("#watch_watching").show();
+          }
+          else {
+            var mydiv = document.getElementById("watch_nowatch");
+            mydiv.appendChild(document.createElement("br"));
+            mydiv.appendChild(document.createTextNode("Add to watch failed. Try again later."));
+          }
+        },
+
+      error:
+        function (obj, textstatus) {
+          console.log("Error");
         }
-        else {
-          var mydiv = document.getElementById("watch_nowatch");
-          mydiv.appendChild(document.createElement("br"));
-          mydiv.appendChild(document.createTextNode("Add to watch failed. Try again later."));
+    }); // End of AJAX call
+
+  } // End of addToWatchlist func
+
+  function removeFromWatchlist(button) {
+    // This performs an asynchronous call to a PHP function using POST method.
+    // Sends item ID as an argument to that function.
+    $.ajax('watchlist_funcs.php', {
+      type: "POST",
+      data: {functionname: 'remove_from_watchlist', arguments: [<?php echo($item_id);?>]},
+
+      success: 
+        function (obj, textstatus) {
+          // Callback function for when call is successful and returns obj
+          console.log("Success");
+          var objT = obj.trim();
+  
+          if (objT == "success") {
+            $("#watch_watching").hide();
+            $("#watch_nowatch").show();
+          }
+          else {
+            var mydiv = document.getElementById("watch_watching");
+            mydiv.appendChild(document.createElement("br"));
+            mydiv.appendChild(document.createTextNode("Watch removal failed. Try again later."));
+          }
+        },
+
+      error:
+        function (obj, textstatus) {
+          console.log("Error");
         }
-      },
+    }); // End of AJAX call
 
-    error:
-      function (obj, textstatus) {
-        console.log("Error");
-      }
-  }); // End of AJAX call
-
-} // End of addToWatchlist func
-
-function removeFromWatchlist(button) {
-  // This performs an asynchronous call to a PHP function using POST method.
-  // Sends item ID as an argument to that function.
-  $.ajax('watchlist_funcs.php', {
-    type: "POST",
-    data: {functionname: 'remove_from_watchlist', arguments: [<?php echo($item_id);?>]},
-
-    success: 
-      function (obj, textstatus) {
-        // Callback function for when call is successful and returns obj
-        console.log("Success");
-        var objT = obj.trim();
- 
-        if (objT == "success") {
-          $("#watch_watching").hide();
-          $("#watch_nowatch").show();
-        }
-        else {
-          var mydiv = document.getElementById("watch_watching");
-          mydiv.appendChild(document.createElement("br"));
-          mydiv.appendChild(document.createTextNode("Watch removal failed. Try again later."));
-        }
-      },
-
-    error:
-      function (obj, textstatus) {
-        console.log("Error");
-      }
-  }); // End of AJAX call
-
-} // End of addToWatchlist func
+  } // End of addToWatchlist func
 </script>

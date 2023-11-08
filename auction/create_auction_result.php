@@ -23,13 +23,13 @@
     // echo "categoryID: ";
     // echo $category_id;
     if (empty($category_id)){
-        echo('<div class="text-center">Select a category to create you auction.</div><br><dib><a href="create_auction.php">Go back.</a></div>');
+        echo('<div class="text-center">Select a category to create you auction.</div><br><div><a href="create_auction.php">Go back.</a></div>');
         exit();
     }
     // 2. check if reserved price has value
     if (is_null($reserved_price)){
         // echo $reserved_price . "<br>";
-        echo('<div class="text-center">Reserved price cannot be null.</div><br><dib><a href="create_auction.php">Go back.</a></div>');
+        echo('<div class="text-center">Reserved price cannot be null.</div><br><div><a href="create_auction.php">Go back.</a></div>');
         exit();
     }
     // 3. check if end time is valid and format for mysql
@@ -38,12 +38,12 @@
         $end_time_formatted = $dateTime->format('Y-m-d H:i:s');
     }
     else{
-        echo('<div class="text-center">Please input a valid auction end time.</div><br><dib><a href="create_auction.php">Go back.</a></div>');
+        echo('<div class="text-center">Please input a valid auction end time.</div><br><div><a href="create_auction.php">Go back.</a></div>');
         exit();
     }
     // 4. check is end date in past
     if ($start_time > $end_time_formatted){
-        echo('<div class="text-center">End time cannot be in past.</div><br><dib><a href="create_auction.php">Go back.</a></div>');
+        echo('<div class="text-center">End time cannot be in past.</div><br><div><a href="create_auction.php">Go back.</a></div>');
         exit();
     }
     
@@ -64,7 +64,7 @@
         exit();
     }
     if (!$success){
-        echo('<div class="text-center">An error occurred during creating auction, please check you input and try again.</div><br><dib><a href="create_auction.php">Go back.</a></div>');
+        echo('<div class="text-center">An error occurred during creating auction, please check you input and try again.</div><br><div><a href="create_auction.php">Go back.</a></div>');
         exit();
     }
     
@@ -80,7 +80,7 @@
         exit();
     }
     if (!$success){
-        echo('<div class="text-center">An error occurred during creating auction, please check you input and try again.</div><br><dib><a href="create_auction.php">Go back.</a></div>');
+        echo('<div class="text-center">An error occurred during creating auction, please check you input and try again.</div><br><div><a href="create_auction.php">Go back.</a></div>');
         exit();
     } 
     // If all is successful, let user know.
