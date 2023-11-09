@@ -8,6 +8,7 @@
 
     // Get info from the URL:
     $item_id = $_GET['item_id'];
+    $user_id = $_SESSION['user_id'];
 
     // TODO: Use item_id to make a query to the database.
     $q = "SELECT 
@@ -71,8 +72,17 @@
     // TODO: If the user has a session, use it to make a query to the database
     //       to determine if the user is already watching this item.
     //       For now, this is hardcoded.
-    $has_session = true;
-    $watching = false;
+    $q0 = "SELECT * 
+           FROM WatchList
+           WHERE itemId = $item_id
+           AND userId = $user_id 
+           ";
+    $r = mysqli_query($con, $q0);
+    if(mysqli_num_rows($r) > 0){
+      $watching = true;
+    }else{
+      $watching = false;
+    }
 ?>
 
 
@@ -88,10 +98,10 @@
      just as easily use PHP as in other places in the code */
   if ($now < $end_time_formatted):
 ?>
-    <div id="watch_nowatch" <?php if ($has_session && $watching) echo('style="display: none"');?> >
+    <div id="watch_nowatch" <?php if($watching) echo('style="display: none"');?> >
       <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist()">+ Add to watchlist</button>
     </div>
-    <div id="watch_watching" <?php if (!$has_session || !$watching) echo('style="display: none"');?> >
+    <div id="watch_watching" <?php if(!$watching) echo('style="display: none"');?> >
       <button type="button" class="btn btn-success btn-sm" disabled>Watching</button>
       <button type="button" class="btn btn-danger btn-sm" onclick="removeFromWatchlist()">Remove watch</button>
     </div>
@@ -164,7 +174,7 @@
           // Callback function for when call is successful and returns obj
           console.log("Success");
           var objT = obj.trim();
-  
+          console.log(objT);
           if (objT == "success") {
             $("#watch_nowatch").hide();
             $("#watch_watching").show();
