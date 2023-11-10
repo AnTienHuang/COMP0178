@@ -128,8 +128,10 @@ else{
       $description = $row['description'];  
       $current_price = $row['highest_bid_price'];  
       $num_bids = $row['num_of_bids'];  
-      $end_date = $row['endTime'];  
-      print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+      $end_time = $row['endTime'];
+      $bid_status = $row['bidStatus'];
+      $bid_price = $row['bid_price'];
+      print_mybids_li($item_id, $title, $description, $current_price, $bid_price, $num_bids, $end_time, $bid_status);
   endwhile;
 ?>
 

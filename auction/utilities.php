@@ -9,7 +9,6 @@ function is_expired($end_time){
   return False;
 }
 
-
 // display_time_remaining:
 // Helper function to help figure out what time to display
 function display_time_remaining($end_time) {
@@ -65,6 +64,35 @@ function print_listing_li($item_id, $title, $desc, $price, $num_bids, $end_time)
     <li class="list-group-item d-flex justify-content-between">
     <div class="p-2 mr-5"><h5><a href="listing.php?item_id=' . $item_id . '">' . $title . '</a></h5>' . $desc_shortened . '</div>
     <div class="text-center text-nowrap"><span style="font-size: 1.5em">£' . number_format($price, 0) . '</span><br/>' . $num_bids . $bid . '<br/>' . $time_remaining . '</div>
+  </li>'
+  );
+}
+
+function print_mybids_li($item_id, $title, $desc, $current_price, $bid_price, $num_bids, $end_time, $bid_status)
+{
+  // Truncate long descriptions
+  if (strlen($desc) > 250) {
+    $desc_shortened = substr($desc, 0, 250) . '...';
+  }
+  else {
+    $desc_shortened = $desc;
+  }
+  
+  // Fix language of bid vs. bids
+  if ($num_bids == 1) {
+    $bid = ' bid';
+  }
+  else {
+    $bid = ' bids';
+  }
+  
+  $time_remaining = display_time_remaining($end_time);
+  
+  // Print HTML
+  echo('
+    <li class="list-group-item d-flex justify-content-between">
+    <div class="p-2 mr-5"><h5><a href="listing.php?item_id=' . $item_id . '">' . $title . '</a></h5>(Bid Status: ' . $bid_status . ')<br>' . '<br>' . $desc_shortened . '</div>
+    <div class="text-center text-nowrap"><span style="font-size: 1.5em">Current price: £' . number_format($current_price, 0) . '</span><br><span style="font-size: 1.5em">Your price: £' . number_format($bid_price, 0) . '</span><br/>' . $num_bids . $bid . '<br/>' . $time_remaining . '</div>
   </li>'
   );
 }
