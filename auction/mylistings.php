@@ -30,8 +30,8 @@
     </div>
     <div class="col-md-3 pr-0">
       <div class="form-group">
-        <label for="status" class="sr-only">Filter by status:</label>
-        <select class="form-control" name="cat">
+        <label for="ItemStatus" class="sr-only">Filter by status:</label>
+        <select class="form-control" name="ItemStatus">
           <option value=""> Show all items</option>
           <option value="Open"> Show 'Open' items only </option>
           <option value="Closed-Won"> Show 'Closed-Won' items only </option>
@@ -57,7 +57,7 @@
 </div> <!-- end search specs bar -->
 <?php
     // Retrieve these from the URL
-    if (!isset($_GET['keyword'])) {
+    if (empty($_GET['keyword'])) {
       // TODO: Define behavior if a keyword has not been specified.
       $keyword_condition = '';
     }
@@ -66,17 +66,18 @@
       $keyword_condition = "AND i.title LIKE '%{$keyword}%'";
     }
   
-    if (!isset($_GET['status'])) {
+    if (empty($_GET['ItemStatus'])) {
       // TODO: Define behavior if a category has not been specified.
+      $item_status = 'All'; 
       $status_condition = '';
     }
     else {
-      $item_status = $_GET['status'];
-      $status_condition = "AND i.itemStatus = {$item_status}";
-      echo"{$status_condition}";
+      $item_status = $_GET['ItemStatus'];
+      $status_condition = "AND itemStatus = '{$item_status}'";
+      // echo"{$status_condition}";
     }
     
-    if (!isset($_GET['order_by'])) {
+    if (empty($_GET['order_by'])) {
       // TODO: Define behavior if an order_by value has not been specified.
       $order_by_condition = '';
     }
@@ -120,9 +121,10 @@
           LEFT JOIN (
             SELECT *
             FROM item
+            WHERE title != '' $status_condition
           ) i ON ic.itemId = i.id
           LEFT JOIN Bid bid ON i.id = bid.itemId
-          WHERE i.sellerId = $user_id $keyword_condition $status_condition 
+          WHERE i.sellerId = $user_id $keyword_condition 
           GROUP BY ic.itemId, ic.categoryId, c.name
           $order_by_condition
     ";
@@ -130,7 +132,8 @@
     $items = mysqli_query($con, $q);
     $row_num = mysqli_num_rows($items);
     if(mysqli_num_rows($items) == 0){
-      echo"There is no aution created yet.";
+      echo"(Showing result for: ".$item_status." items)<br><br>";
+      echo"There is no aution yet.";
       exit();
     }
     elseif(!$items){
