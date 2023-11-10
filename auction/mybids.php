@@ -9,6 +9,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 <div class="container">
 
 <h2 class="my-3">My bids</h2>
+
 <div id="searchSpecs">
 <!-- When this form is submitted, this PHP page is what processes it.
      Search/sort specs are passed to this page through parameters in the URL
@@ -105,6 +106,12 @@ else{
       LEFT JOIN Bid b2 ON b.itemId = b2.itemId
       LEFT JOIN item i ON i.id = b.itemId
       WHERE b.buyerId = $user_id $status_condition
+      AND (b.itemId, b.bidTime) IN (
+            SELECT itemId, MAX(bidTime)
+            FROM Bid
+            WHERE buyerId = $user_id
+            GROUP BY itemId
+        )
       GROUP BY b.id, b.price, b.bidStatus, u.firstName, u.lastName, i.endTime
       $order_by_condition";
 
@@ -134,6 +141,12 @@ else{
       print_mybids_li($item_id, $title, $description, $current_price, $bid_price, $num_bids, $end_time, $bid_status);
   endwhile;
 ?>
+<div>
+  <br>
+  <br>
+  <br>
+  <p> aNote: If you have placed multiple bids on an item, only the latest one will be listed here. <p>
+</div>
 
 <?php mysqli_close($con); ?>
 <?php include_once("footer.php")?>
