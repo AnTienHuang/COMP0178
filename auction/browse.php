@@ -1,11 +1,10 @@
-<?php include_once("header.php")?>
-<?php require("utilities.php")?>
-
 <?php 
-    include("db.php");
-    ini_set('display_errors','On');
-    ini_set('error_reporting',E_ALL);
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+include_once("header.php");
+require("utilities.php");
+include("db.php");
+ini_set('display_errors','On');
+ini_set('error_reporting',E_ALL);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 ?>
 
 
