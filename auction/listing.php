@@ -122,7 +122,7 @@
 
     <p>
 <?php if ($now > $end_time_formatted): ?>
-     This auction ended <?php echo"{$end_time_formatted}" ?>
+     This auction ended <?php echo"{$end_time_formatted->format('Y-m-d H:i:s')}" ?>
      
      <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
