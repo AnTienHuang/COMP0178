@@ -24,19 +24,19 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
   // TODO: Perform a query to pull up auctions they might be interested in.
   
   // TODO: Loop through results and print them out as list items.
-  if (!isset($_GET['page'])) {
-    $curr_page = 1;
-  }
-  else {
-    $curr_page = $_GET['page'];
-  } 
-  $user_id = $_SESSION['user_id'];
   if (!(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true)) {
     echo"Please login first and make sure you have the right permission";
     exit();
   }
   else{
-  // get the top 5 recent added items in the category of the user's latest 5 unique bid items
+    if (!isset($_GET['page'])) {
+      $curr_page = 1;
+    }
+    else {
+      $curr_page = $_GET['page'];
+    } 
+    $user_id = $_SESSION['user_id'];
+    // get the top 5 recent added items in the category of the user's latest 5 unique bid items
   $q = "SELECT *
         FROM Item
         JOIN -- categories of the latest 5 unique bid item from the user 
