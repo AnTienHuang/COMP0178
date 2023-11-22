@@ -25,6 +25,7 @@
               main.description,
               main.endTime,
               main.startingPrice,
+              main.sellerId,
               u.firstName AS leading_buyer_first_name, 
               u.lastName AS leading_buyer_last_name
           FROM (
@@ -37,6 +38,7 @@
                   i.title,
                   i.description,
                   i.endTime,
+                  i.sellerId,
                   MAX(b.id) AS max_bid_id,
                   i.startingPrice
               FROM Item_Category ic
@@ -58,7 +60,8 @@
       $description = $row['description'];  
       $current_price = $row['highest_bid_price'];  
       $num_bids = $row['num_of_bids'];  
-      $end_time = $row['endTime'];  
+      $end_time = $row['endTime']; 
+      $sellerId = $row['sellerId'];
       $leading_buyer_name = $row['leading_buyer_first_name'] . " " . $row['leading_buyer_last_name'];
       $starting_price = $row['startingPrice'];
   endwhile;
@@ -100,7 +103,7 @@
 <?php
   /* The following watchlist functionality uses JavaScript, but could
      just as easily use PHP as in other places in the code */
-  if ($now < $end_time_formatted):
+  if ($now < $end_time_formatted && $user_id != $sellerId):
 ?>
     <div id="watch_nowatch" <?php if($watching) echo('style="display: none"');?> >
       <button type="button" class="btn btn-outline-secondary btn-sm" onclick="addToWatchlist()">+ Add to watchlist</button>
@@ -135,19 +138,21 @@
      <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)); echo" by " . $leading_buyer_name ?></p>
 
     <!-- Bidding form -->
-    <form method="POST" action="place_bid.php">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text">£</span>
+    <?php if ($user_id != $sellerId): ?>
+      <form method="POST" action="place_bid.php">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">£</span>
+          </div>
+        <input type="hidden" name="item_id" value="<?php echo $item_id; ?>">
+        <input type="hidden" name="current_price" value="<?php echo $current_price; ?>">
+        <input type="hidden" name="starting_price" value="<?php echo $starting_price; ?>">
+        <input type="hidden" name="end_time" value="<?php echo $end_time; ?>">
+        <input type="number" class="form-control" name="new_bid_price">
         </div>
-      <input type="hidden" name="item_id" value="<?php echo $item_id; ?>">
-      <input type="hidden" name="current_price" value="<?php echo $current_price; ?>">
-      <input type="hidden" name="starting_price" value="<?php echo $starting_price; ?>">
-      <input type="hidden" name="end_time" value="<?php echo $end_time; ?>">
-	    <input type="number" class="form-control" name="new_bid_price">
-      </div>
-      <button type="submit" class="btn btn-primary form-control">Place bid</button>
-    </form>
+        <button type="submit" class="btn btn-primary form-control">Place bid</button>
+      </form>
+    <?php endif ?>      
 <?php endif ?>
 
   
