@@ -8,6 +8,10 @@
 
     // Get info from the URL:
     $item_id = $_GET['item_id'];
+    if (!(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true)) {
+      echo"Please login first and make sure you have the right permission";
+      exit();
+    }
     $user_id = $_SESSION['user_id'];
 
     // TODO: Use item_id to make a query to the database.
