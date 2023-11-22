@@ -166,8 +166,9 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
             $description = $row['description'];  
             $current_price = $row['highest_bid_price'];  
             $num_bids = $row['num_of_bids'];  
-            $end_date = $row['endTime'];  
-            print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+            $end_date = $row['endTime'];
+            $category_name = $row['category_name'];
+            print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date, $category_name);
         endwhile;
     ?>
     

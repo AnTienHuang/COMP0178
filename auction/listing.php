@@ -26,6 +26,7 @@
               main.endTime,
               main.startingPrice,
               main.sellerId,
+              main.itemStatus,
               u.firstName AS leading_buyer_first_name, 
               u.lastName AS leading_buyer_last_name
           FROM (
@@ -39,6 +40,7 @@
                   i.description,
                   i.endTime,
                   i.sellerId,
+                  i.itemStatus,
                   MAX(b.id) AS max_bid_id,
                   i.startingPrice
               FROM Item_Category ic
@@ -62,6 +64,7 @@
       $num_bids = $row['num_of_bids'];  
       $end_time = $row['endTime']; 
       $sellerId = $row['sellerId'];
+      $item_status = $row['itemStatus'];
       $leading_buyer_name = $row['leading_buyer_first_name'] . " " . $row['leading_buyer_last_name'];
       $starting_price = $row['startingPrice'];
   endwhile;
@@ -130,7 +133,12 @@
     <p>
 <?php if ($now > $end_time_formatted): ?>
      This auction ended <?php echo"{$end_time_formatted->format('Y-m-d H:i:s')}" ?>
-     
+     <p class="lead">Starting price: £<?php echo(number_format($starting_price, 2)); ?></p><p class="lead">Item Status: <?php echo($item_status); ?></p>
+     <?php if ($leading_buyer_name = ' '): ?> 
+     <?php else: ?>
+      <p class="lead">Final price: £<?php echo(number_format($current_price, 2)); echo" by " . $leading_buyer_name ?></p>
+     <?php endif ?>
+      
      <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
      Auction ends <?php echo"{$end_time} <br> {$time_remaining}" ?></p>  

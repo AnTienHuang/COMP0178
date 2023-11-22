@@ -170,8 +170,9 @@
             $current_price = $row['highest_bid_price'];  
             $num_bids = $row['num_of_bids'];  
             $end_date = $row['endTime'];  
+            $category_name = $row['category_name'];
             // $end_date = date_create($row['endTime']);
-            print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+            print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date, $category_name);
         endwhile;
     ?>
     
