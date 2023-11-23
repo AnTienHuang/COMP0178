@@ -12,6 +12,7 @@
   // echo"<br>";
   // echo "name: ".$_SESSION['name'];
   // echo"<br>";
+  include_once("check_auction_end.php");
 ?>
 
 
@@ -67,7 +68,10 @@
     </li>
 	<li class="nav-item mx-1">
       <a class="nav-link" href="recommendations.php">Recommended</a>
-    </li>');
+    </li>
+  <li class="nav-item mx-1">
+    <a class="nav-link" href="check_auction_end.php">check</a>
+  </li>');
   if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Seller') {
   echo('
 	<li class="nav-item mx-1">

@@ -1,4 +1,8 @@
 <?php
+    ini_set('display_errors','On');
+    ini_set('error_reporting',E_ALL);
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
     $db_server = "localhost";
     $db_user = "example";
     $db_password = "";
@@ -11,7 +15,6 @@
         $db_password,
         $db_name
     );
-
     // if($con){
     //     echo"connected";
     //   }
