@@ -69,9 +69,7 @@
 	<li class="nav-item mx-1">
       <a class="nav-link" href="recommendations.php">Recommended</a>
     </li>
-  <li class="nav-item mx-1">
-    <a class="nav-link" href="check_auction_end.php">check</a>
-  </li>');
+');
   if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'Seller') {
   echo('
 	<li class="nav-item mx-1">
@@ -79,7 +77,10 @@
     </li>
 	<li class="nav-item ml-3">
       <a class="nav-link btn border-light" href="create_auction.php">+ Create auction</a>
-    </li>');
+    </li>
+    <li class="nav-item mx-1">
+    <a class="nav-link" href="scheduled_job_check_auction_end.php">Manually check ending auction</a>
+  </li>');
   }
 ?>
   </ul>

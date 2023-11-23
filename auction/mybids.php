@@ -1,7 +1,7 @@
 <?php     
 include_once("header.php");
 require_once("utilities.php");
-include_once("db.php");
+include("db.php");
 ini_set('display_errors','On');
 ini_set('error_reporting',E_ALL);
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -145,7 +145,7 @@ else{
   <br>
   <br>
   <br>
-  <p> aNote: If you have placed multiple bids on an item, only the latest one will be listed here. <p>
+  <p> Note: If you have placed multiple bids on an item, only the latest one will be listed here. <p>
 </div>
 
 <?php mysqli_close($con); ?>

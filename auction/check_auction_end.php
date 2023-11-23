@@ -1,5 +1,5 @@
 <?php 
-    include_once("db.php");
+    include("db.php");
     include_once("utilities.php");
     ini_set('display_errors','On');
     ini_set('error_reporting',E_ALL);
