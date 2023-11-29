@@ -69,9 +69,27 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
             WHERE buyerId = $user_id)
   ";
 
+  $sql = "SELECT i.title, i.id AS itemId, i.description,
+  MAX(b.price) AS highest_bid_price,
+  COUNT(b.id) AS num_of_bids,
+  i.endTime
+  FROM Item i
+  JOIN Item_Category ic ON i.id = ic.itemId
+  JOIN Category c ON ic.categoryId = c.id
+  LEFT JOIN Bid b ON i.id = b.itemId
+  WHERE c.id IN (SELECT DISTINCT c.categoryId
+          FROM WatchList w
+          JOIN Item_Category c ON w.itemId = c.itemId
+          WHERE w.userId = $user_id)
+  GROUP BY i.id
+  LIMIT 5";
+
   $items = mysqli_query($con, $q);
-  $row_num = mysqli_num_rows($items);
-  if(mysqli_num_rows($items) == 0){
+  $row_num_items = mysqli_num_rows($items);
+  $items1 = mysqli_query($con, $sql);
+  $row_num_items1 = mysqli_num_rows($items1);
+
+  if(mysqli_num_rows($items) == 0 and mysqli_num_rows($items1) == 0){
     echo"There is no recommendation yet.";
     exit();
   }
@@ -80,7 +98,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
   }
   else {
     $results_per_page = 10;
-    $max_page = ceil($row_num / $results_per_page);
+    $max_page = ceil($row_num_items / $results_per_page);
   }
   } 
 ?>
@@ -105,6 +123,18 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
             // $end_date = date_create($row['endTime']);
             print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
         endwhile;
+
+        while($row = mysqli_fetch_assoc($items1)) : 
+          $item_id = $row['itemId'];
+          $title = $row['title'];  
+          $description = $row['description'];  
+          $current_price = $row['highest_bid_price'];  
+          $num_bids = $row['num_of_bids'];  
+          $end_date = $row['endTime'];  
+          $end_date = date_create($row['endTime']);
+          print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+      endwhile;
+
     ?>
     
 <!-- Pagination for results listings -->
@@ -163,6 +193,28 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
       </a>
     </li>');
   }
+
+
+  // TODO: Loop through results and print them out as list items.
+
+
+
+
+//if(mysqli_num_rows($items) == 0){
+  //echo"There is no recommendations yet.";
+  //exit();
+//}
+//elseif(!$items){
+  //echo"There is an error when querying items";
+//}
+//else {
+  //$results_per_page = 10;
+  //$max_page = ceil($row_num / $results_per_page);
+//}
+
+//}
+
+        
   
 
 mysqli_close($con); ?>

@@ -1,7 +1,11 @@
 <?php
+    ini_set('display_errors','On');
+    ini_set('error_reporting',E_ALL);
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
     $db_server = "localhost";
     $db_user = "example";
-    $db_password = "";
+    $db_password = "123";
     $db_name = "auction_test";
     $con = "";
 
@@ -10,14 +14,14 @@
         $db_user,
         $db_password,
         $db_name
-    );
+    ) or die('Error connecting to MySQL server.' . mysql_error());
 
-    // if($con){
-    //     echo"connected";
-    //   }
-    //   else{
-    //     echo"not connected";
-    //   }
+    if($con){
+        echo"connected";
+      }
+    else{
+        echo"not connected";
+    }
     // }
     // catch(){
     //     echo"there is an error"

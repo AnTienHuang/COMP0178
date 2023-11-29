@@ -82,17 +82,17 @@
 </nav>
 
 <!-- Login modal -->
-<div class="modal fade" id="loginModal">
+<!-- <div class="modal fade" id="loginModal">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content"> -->
 
       <!-- Modal Header -->
-      <div class="modal-header">
+      <!-- <div class="modal-header">
         <h4 class="modal-title">Login</h4>
-      </div>
+      </div> -->
 
       <!-- Modal body -->
-      <div class="modal-body">
+      <!-- <div class="modal-body"> -->
         <form method="POST" action="login_result.php">
           <div class="form-group">
             <label for="email">Email</label>
@@ -105,8 +105,9 @@
           <button type="submit" class="btn btn-primary form-control">Sign in</button>
         </form>
         <div class="text-center">or <a href="register.php">create an account</a></div>
-      </div>
+      <!-- </div> -->
 
-    </div>
-  </div>
+    <!-- </div> -->
+  <!-- </div> -->
+<!-- </div> End modal -->
 </div> <!-- End modal -->
