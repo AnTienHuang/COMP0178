@@ -97,7 +97,7 @@ function print_mybids_li($item_id, $title, $desc, $current_price, $bid_price, $n
   );
 }
 
-function update_bids_status($item_id, $won_bid_id){
+function connect(){
   $db_server = "localhost";
   $db_user = "example";
   $db_password = "";
@@ -110,6 +110,64 @@ function update_bids_status($item_id, $won_bid_id){
       $db_password,
       $db_name
   );
+  return $con;
+}
+
+function get_item($item_id){
+  $db_server = "localhost";
+  $db_user = "example";
+  $db_password = "";
+  $db_name = "auction_test";
+  $con = "";
+
+  // try{
+  $con = mysqli_connect($db_server,
+      $db_user,
+      $db_password,
+      $db_name
+  );
+
+  $q = "SELECT * FROM Item WHERE id = $item_id";
+
+  $items = mysqli_query($con, $q);
+
+  return $items;
+}
+
+function get_bid($item_id){
+  $con = connect();
+
+  $q = "SELECT * FROM Bid WHERE id = $bid_id";
+
+  $bids = mysqli_query($con, $q);
+
+  return $bids;
+}
+
+function get_latest_bids_by_item($item_id){
+  $con = connect();
+
+  $q = "SELECT
+          bid_main.id,
+          bid_main.bidStatus,
+          bid_main.buyerId
+        FROM Bid bid_main
+        WHERE bid_main.itemId = $item_id
+        AND bid_main.id = (
+          SELECT id
+          FROM Bid
+          WHERE buyerId = bid_main.buyerId AND itemId = $item_id
+          ORDER BY price DESC
+          LIMIT 1)
+  ";
+
+  $bids = mysqli_query($con, $q);
+
+  return mysqli_fetch_assoc($bids); 
+}
+
+function update_bids_status($item_id, $won_bid_id){
+  $con = connect();
 
   $q = "UPDATE Bid
   SET bidStatus = 'Lost'
@@ -136,18 +194,8 @@ function update_bids_status($item_id, $won_bid_id){
 }
 
 function update_item_status($item_id, $item_status){
-  $db_server = "localhost";
-  $db_user = "example";
-  $db_password = "";
-  $db_name = "auction_test";
-  $con = "";
+  $con = connect();
 
-  // try{
-  $con = mysqli_connect($db_server,
-      $db_user,
-      $db_password,
-      $db_name
-  );
   $q = "UPDATE Item
   SET itemStatus = '$item_status'
   WHERE id = $item_id
@@ -161,4 +209,64 @@ function update_item_status($item_id, $item_status){
   mysqli_close($con);
 }
 
+function notify_seller_close($item_id, $seller_id){
+
+  $con = connect();
+  while($item = mysqli_fetch_assoc(get_item($item_id))) :
+    $item_status = $item['itemStatus'];
+  endwhile;
+  $created_time = date('Y-m-d H:i:s');
+  $q = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+  VALUES ($seller_id, $item_id, 'Auction Close', '$created_time', 'Auction ended as $item_status')
+  ";
+
+  if (mysqli_query($con, $q)) {
+    $last_id = mysqli_insert_id($con);
+    $success = true;
+    echo "New record created successfully. Last inserted ID is: " . $last_id;
+  } else {
+    echo "Error: " . $q . "<br>" . mysqli_error($con);
+    exit();
+  }
+  mysqli_close($con);
+}
+
+function notify_buyer_close($item_id){
+  $con = connect();
+  $created_time = date('Y-m-d H:i:s');
+  while($item = mysqli_fetch_assoc(get_item($item_id))) :
+    $item_title = $item['title'];
+  endwhile;
+
+
+  while($bid = mysqli_fetch_assoc(get_latest_bids_by_item($item_id))) :
+    $bid_status = $bid['bidStatus'];
+    $buyer_id = $bid['buyerId'];
+    $bid_id = $bid['id'];
+    $message = "Your bid for $item_title ended as $bid_status";
+
+    $q = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message, bidID) 
+    VALUES ($buyer_id, $item_id, 'Auction Close', '$created_time', '$message', $bid_id)
+    ";
+  
+    if (mysqli_query($con, $q)) {
+      $last_id = mysqli_insert_id($con);
+      echo "New record created successfully. Last inserted ID is: " . $last_id;
+    } else {
+      echo "Error: " . $q . "<br>" . mysqli_error($con);
+    }
+  endwhile;
+
+  mysqli_close($con);
+}
+
+function print_notifications($time, $message)
+{
+  // Print HTML
+  echo('
+    <li class="list-group-item d-flex justify-content-between">
+    <div class="p-2 mr-5"><h5>'.$time.'</h5><br>' . $message . '</div>
+  </li>'
+  );
+}
 ?>

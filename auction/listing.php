@@ -58,7 +58,7 @@
     $row_num = mysqli_num_rows($items);
     while($row = mysqli_fetch_assoc($items)) : 
       $item_id = $row['itemId'];
-      $title = $row['title'];  
+      $item_title = $row['title'];  
       $description = $row['description'];  
       $current_price = $row['highest_bid_price'];  
       $num_bids = $row['num_of_bids'];  
@@ -100,7 +100,7 @@
 
 <div class="row"> <!-- Row #1 with auction title + watch button -->
   <div class="col-sm-8"> <!-- Left col -->
-    <h2 class="my-3"><?php echo($title); ?></h2>
+    <h2 class="my-3"><?php echo($item_title); ?></h2>
   </div>
   <div class="col-sm-4 align-self-center"> <!-- Right col -->
 <?php
@@ -153,6 +153,7 @@
             <span class="input-group-text">£</span>
           </div>
         <input type="hidden" name="item_id" value="<?php echo $item_id; ?>">
+        <input type="hidden" name="item_title" value="<?php echo $item_title; ?>"> 
         <input type="hidden" name="current_price" value="<?php echo $current_price; ?>">
         <input type="hidden" name="starting_price" value="<?php echo $starting_price; ?>">
         <input type="hidden" name="end_time" value="<?php echo $end_time; ?>">

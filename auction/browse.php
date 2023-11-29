@@ -66,6 +66,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 </div>
 
 <?php
+
   // Retrieve these from the URL
   if (empty($_GET['keyword'])) {
     // TODO: Define behavior if a keyword has not been specified.

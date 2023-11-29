@@ -1,0 +1,21 @@
+DROP TABLE IF EXISTS Notification;
+
+CREATE TABLE Notification
+(
+  id INTEGER AUTO_INCREMENT PRIMARY KEY,
+  userID INTEGER,
+  FOREIGN KEY (userID) REFERENCES User(id)
+    ON DELETE CASCADE,
+  itemId INTEGER,
+  FOREIGN KEY (itemId) REFERENCES Item(id)
+    ON DELETE CASCADE,
+  bidID INTEGER,
+  FOREIGN KEY (bidID) REFERENCES Bid(id)
+    ON DELETE CASCADE,
+  notificationType VARCHAR(20) NOT NULL,
+  CONSTRAINT check_notification_type CHECK (notificationType IN ('Auction Update', 'Auction Close')),
+  createdTime datetime NOT NULL,
+  message VARCHAR(255)
+)
+
+ENGINE = InnoDB;
