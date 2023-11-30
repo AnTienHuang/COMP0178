@@ -9,9 +9,13 @@ ENGINE = InnoDB;
 
 INSERT INTO Category (name)
 VALUES ('Electronics'),
-       ('Home'),
-       ('Kitchen'),
+       ('Home & garden'),
        ('Gift'),
        ('Clothing'),
        ('Toys'),
-       ('Game')
+       ('Games'),
+       ('Collectibles & antiques'),
+       ('Sporting goods'),
+       ('Jewellery & watches'),
+       ('Motors'),
+       ('Other categories')

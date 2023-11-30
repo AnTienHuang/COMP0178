@@ -37,53 +37,71 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     } 
     $user_id = $_SESSION['user_id'];
     // get the top 5 recent added items in the category of the user's latest 5 unique bid items
-  $q = "SELECT *
-        FROM Item
-        JOIN -- categories of the latest 5 unique bid item from the user 
-            (SELECT ic.categoryId, b.itemId, b.buyerId, c.name AS category_name
-              FROM Item_Category AS ic
-              JOIN
-                  (SELECT itemId,
-                  MAX(bidTime),
-                  buyerId
-                  FROM bid
-                  WHERE buyerId = $user_id
-                  AND bidStatus <> 'Won'
-                  GROUP BY itemId
-                  ORDER BY MAX(bidTime) DESC
-                  LIMIT 5
-                  ) AS b 
-              ON ic.itemId = b.itemId
-              JOIN Category AS c ON ic.categoryId = c.Id) AS a
-        ON Item.Id = a.itemId
-        JOIN
-            (SELECT 
-                COUNT(id) as num_of_bids,
-                MAX(price) as current_price,
-                itemId
-             FROM bid
-             GROUP BY itemId) AS b2
-        ON Item.Id = b2.itemId
-        WHERE id NOT IN 
-            (SELECT DISTINCT itemId
-            FROM bid
-            WHERE buyerId = $user_id)
-  ";
+    $q = "SELECT *
+    FROM Item
+    JOIN -- categories of the latest 5 unique bid item from the user 
+        (SELECT ic.categoryId, b.itemId, b.buyerId
+          FROM Item_Category AS ic
+          JOIN
+              (SELECT itemId,
+              MAX(bidTime),
+              buyerId
+              FROM bid
+              WHERE buyerId = $user_id
+              AND bidStatus <> 'Won'
+              GROUP BY itemId
+              ORDER BY MAX(bidTime) DESC
+              LIMIT 5
+              ) AS b 
+          ON ic.itemId = b.itemId) AS a
+    ON Item.Id = a.itemId
+    JOIN
+        (SELECT 
+            COUNT(id) as num_of_bids,
+            MAX(price) as current_price,
+            itemId
+         FROM bid
+         GROUP BY itemId) AS b2
+    ON Item.Id = b2.itemId
+    WHERE id NOT IN 
+        (SELECT DISTINCT itemId
+        FROM bid
+        WHERE buyerId = $user_id)
+";
 
-  $items = mysqli_query($con, $q);
-  $row_num = mysqli_num_rows($items);
-  if(mysqli_num_rows($items) == 0){
-    echo"There is no recommendation yet.";
-    exit();
-  }
-  elseif(!$items){
-    echo"There is an error when querying items";
-  }
-  else {
-    $results_per_page = 10;
-    $max_page = ceil($row_num / $results_per_page);
-  }
-  } 
+$sql = "SELECT i.title, i.id AS itemId, i.description,
+MAX(b.price) AS highest_bid_price,
+COUNT(b.id) AS num_of_bids,
+i.endTime,
+GROUP_CONCAT(c.name) AS category_name
+FROM Item i
+JOIN Item_Category ic ON i.id = ic.itemId
+JOIN Category c ON ic.categoryId = c.id
+LEFT JOIN Bid b ON i.id = b.itemId
+WHERE c.id IN (SELECT DISTINCT c.categoryId
+      FROM WatchList w
+      JOIN Item_Category c ON w.itemId = c.itemId
+      WHERE w.userId = $user_id)
+GROUP BY i.id
+LIMIT 5";
+
+$items = mysqli_query($con, $q);
+$row_num_items = mysqli_num_rows($items);
+$items1 = mysqli_query($con, $sql);
+$row_num_items1 = mysqli_num_rows($items1);
+
+if(mysqli_num_rows($items) == 0 and mysqli_num_rows($items1) == 0){
+echo"There is no recommendation yet.";
+exit();
+}
+elseif(!$items){
+echo"There is an error when querying items";
+}
+else {
+$results_per_page = 10;
+$max_page = ceil($row_num_items / $results_per_page);
+}
+} 
 ?>
 <div class="container mt-5">
 
@@ -107,6 +125,18 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
             // $end_date = date_create($row['endTime']);
             print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date, $category_name);
         endwhile;
+
+        while($row = mysqli_fetch_assoc($items1)) : 
+          $item_id = $row['itemId'];
+          $title = $row['title'];  
+          $description = $row['description'];  
+          $current_price = $row['highest_bid_price'];  
+          $num_bids = $row['num_of_bids'];  
+          $end_date = $row['endTime'];
+          $category_name = $row['category_name'];
+          //$end_date = date_create($row['endTime']);
+          print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date, $category_name);
+      endwhile;
     ?>
     
 <!-- Pagination for results listings -->
