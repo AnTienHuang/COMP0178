@@ -53,10 +53,11 @@ if(isset($_POST['email']) && isset($_POST['password'])){
                 $_SESSION['user_id'] = $row['id'];
 
                 // echo"aa";        
+                echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
             }
         }
         else{
-            // echo"bbb";
+            echo('Invalid username or password, please try again');
         }
     }
     catch(Exception $e){
@@ -69,7 +70,6 @@ if(isset($_POST['email']) && isset($_POST['password'])){
 // $_SESSION[]
 
 
-echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
 
 // Redirect to index after 5 seconds
 header("refresh:2;url=index.php");
