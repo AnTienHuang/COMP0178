@@ -43,7 +43,7 @@
 
         # check if passwords are the same
         if($password != $password2){
-            $error = "Passwords does not match";
+            $error = "Passwords do not match";
             $valid = false;
         }
 
