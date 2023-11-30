@@ -22,7 +22,7 @@
   <div class="form-group row">
     <label for="email" class="col-sm-2 col-form-label text-right">Email</label>
   <div class="col-sm-10">
-      <input type="text" class="form-control" name="email" placeholder="Email" required>
+      <input type="email" class="form-control" name="email" placeholder="Email" required>
       <small id="emailHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
 	</div>
   </div>
