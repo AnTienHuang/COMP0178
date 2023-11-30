@@ -1,6 +1,6 @@
 <?php 
 include_once("header.php");
-require("utilities.php");
+require_once("utilities.php");
 include("db.php");
 ini_set('display_errors','On');
 ini_set('error_reporting',E_ALL);
@@ -131,7 +131,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
           $current_price = $row['highest_bid_price'];  
           $num_bids = $row['num_of_bids'];  
           $end_date = $row['endTime'];  
-          $end_date = date_create($row['endTime']);
+          //$end_date = date_create($row['endTime']);
           print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
       endwhile;
 
