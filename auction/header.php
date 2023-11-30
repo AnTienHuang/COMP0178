@@ -57,7 +57,7 @@
   </ul>
 </nav>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <ul class="navbar-nav align-middle">
+  <ul class="navbar-nav align-middle text-center">
 	<li class="nav-item mx-1">
       <a class="nav-link" href="browse.php">Browse</a>
     </li>
@@ -68,6 +68,9 @@
     </li>
     <li class="nav-item mx-1">
       <a class="nav-link" href="bid_noti.php">Bid Notifications</a>
+    </li>
+    <li class="nav-item mx-1">
+      <a class="nav-link" href="mywatchlist.php">My Watchlist</a>
     </li>
 	  <li class="nav-item mx-1">
       <a class="nav-link" href="recommendations.php">Recommended</a>
