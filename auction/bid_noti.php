@@ -59,7 +59,7 @@ else{
         *
         FROM Notification
         Where userID = $user_id
-        AND bidId is not null
+        AND (bidId is not null OR notificationType = 'WatchList Update')
       $order_by_condition";
   $notifications = mysqli_query($con, $q);
   if(mysqli_num_rows($notifications) == 0){

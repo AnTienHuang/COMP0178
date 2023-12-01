@@ -103,14 +103,34 @@
                     exit();
                 }           
             endwhile;
+        // create notifications for watchlist items
+            $q6 = "SELECT
+                    userId AS watcher_id
+                    FROM WatchList
+                    WHERE itemId = $item_id
+            ";
+
+            $watchLists = mysqli_query($con, $q6);
+            while($watchList = mysqli_fetch_assoc($watchLists)):
+                $watcher_id = $watchList['watcher_id'];
+
+                $q7 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($watcher_id, $item_id, 'WatchList Update', '$now', 'The item \'$item_title\' in your watch list received a new bid at £$new_bid_price')
+                ";
+                if(mysqli_query($con, $q7)){
+                    $success = true;
+                    // echo "New record created successfully. Last inserted ID is: " . $last_id;
+                }else{
+                    echo "Error: " . $q7 . "<br>". mysqli_error($con);
+                    exit();
+                }           
+            endwhile;
             if (!$success){
                 echo('<br><div class="text-center">An error occured when placing bid, please try again.</div><br><div class="text-center"><a href="listing.php?item_id=' . $item_id . '">Go back.</a></div>');
                 exit();
             }else{
                 echo('<br><div class="text-center">Bid placed successfully.</div><br><div class="text-center"><a href="browse.php">Browse other items.</a></div>');
             }
-        // create notifications for watchlist items
-        
         }
 
     }
