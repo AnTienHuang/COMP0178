@@ -55,6 +55,9 @@ if(isset($_POST['email']) && isset($_POST['password'])){
                 // echo"aa";        
                 echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
             }
+            else{
+                echo('Invalid username or password, please try again');
+            }
         }
         else{
             echo('Invalid username or password, please try again');

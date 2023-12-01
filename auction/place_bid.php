@@ -109,6 +109,8 @@
             }else{
                 echo('<br><div class="text-center">Bid placed successfully.</div><br><div class="text-center"><a href="browse.php">Browse other items.</a></div>');
             }
+        // create notifications for watchlist items
+        
         }
 
     }
