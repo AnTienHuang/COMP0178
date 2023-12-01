@@ -37,6 +37,10 @@
         $dateTime = date_create($end_time);
         $end_time_formatted = $dateTime->format('Y-m-d H:i:s');
     }
+    else{
+        echo('<div class="text-center">Please input a valid auction end time.</div><br><div><a href="create_auction.php">Go back.</a></div>');
+        exit();
+    }
     if ($reserved_price < 0){
         echo('<div class="text-center">Reserved price cannot be negative.</div><br><div><a href="create_auction.php">Go back.</a></div>');
         exit(); 
@@ -44,10 +48,6 @@
     if ($starting_price < 0){
         echo('<div class="text-center">Starting price cannot be negative.</div><br><div><a href="create_auction.php">Go back.</a></div>');
         exit(); 
-    }
-    else{
-        echo('<div class="text-center">Please input a valid auction end time.</div><br><div><a href="create_auction.php">Go back.</a></div>');
-        exit();
     }
     // 4. check is end date in past
     if ($start_time > $end_time_formatted){
