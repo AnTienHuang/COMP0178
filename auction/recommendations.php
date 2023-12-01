@@ -73,7 +73,7 @@ $sql = "SELECT i.title, i.id AS itemId, i.description,
 MAX(b.price) AS highest_bid_price,
 COUNT(b.id) AS num_of_bids,
 i.endTime,
-GROUP_CONCAT(c.name) AS category_name
+c.name AS category_name
 FROM Item i
 JOIN Item_Category ic ON i.id = ic.itemId
 JOIN Category c ON ic.categoryId = c.id
@@ -82,7 +82,7 @@ WHERE c.id IN (SELECT DISTINCT c.categoryId
       FROM WatchList w
       JOIN Item_Category c ON w.itemId = c.itemId
       WHERE w.userId = $user_id)
-GROUP BY i.id
+GROUP BY i.id, c.name
 LIMIT 5";
 
 $items = mysqli_query($con, $q);
@@ -182,14 +182,14 @@ $max_page = ceil($row_num_items / $results_per_page);
     
     // Do this in any case
     echo('
-      <a class="page-link" href="mylistings.php?' . $querystring . 'page=' . $i . '">' . $i . '</a>
+      <a class="page-link" href="recommendations.php?' . $querystring . 'page=' . $i . '">' . $i . '</a>
     </li>');
   }
   
   if ($curr_page != $max_page) {
     echo('
     <li class="page-item">
-      <a class="page-link" href="mylistings.php?' . $querystring . 'page=' . ($curr_page + 1) . '" aria-label="Next">
+      <a class="page-link" href="recommendations.php?' . $querystring . 'page=' . ($curr_page + 1) . '" aria-label="Next">
         <span aria-hidden="true"><i class="fa fa-arrow-right"></i></span>
         <span class="sr-only">Next</span>
       </a>
