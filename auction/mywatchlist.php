@@ -19,17 +19,30 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     } else {
         $user_id = $_SESSION['user_id'];
 
-        // TODO: Perform a query to pull up the items in the watchlist for the user.
+        // Perform a query to pull up the items in the watchlist for the user.
         $q = "SELECT
-                w.itemId,
-                i.title,
-                i.description,
-                i.currentPrice,
-                i.startTime,
-                i.endTime
-              FROM WatchList w
-              JOIN Item i ON w.itemId = i.id
-              WHERE w.userId = $user_id";
+                    w.itemId,
+                    i.title,
+                    i.description,
+                    MAX(b.price) AS highest_bid_price,
+                    i.startTime,
+                    i.endTime,
+                    COUNT(DISTINCT b.id) AS num_bids,
+                    c.name
+                FROM
+                    WatchList w
+                JOIN
+                    Item i ON w.itemId = i.id
+                LEFT JOIN
+                    Bid b ON w.itemId = b.itemId
+                LEFT JOIN
+                    Item_Category ic ON i.id = ic.itemId
+                LEFT JOIN
+                    Category c ON ic.categoryId = c.id
+                WHERE
+                    w.userId = $user_id
+                GROUP BY
+                    w.itemId, i.title, i.description, i.startTime, i.endTime, c.name";
 
         $watchlist_items = mysqli_query($con, $q);
 
@@ -46,18 +59,17 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     }
     ?>
 
-    <!-- TODO: Loop through results and print them out as list items. -->
+    <!-- Loop through results and print them out as list items. -->
     <?php
     while ($row = mysqli_fetch_assoc($watchlist_items)) :
-        $item_id = $row['itemId'];
-        $title = $row['title'];
-        $description = $row['description'];
-        $current_price = $row['currentPrice'];
-        $start_time = $row['startTime'];
-        $end_time = $row['endTime'];
-
-        // Use a function to print list items (similar to print_mybids_li)
-        print_watchlist_li($item_id, $title, $description, $current_price, $start_time, $end_time);
+            $item_id = $row['itemId'];
+            $title = $row['title'];  
+            $description = $row['description'];  
+            $current_price = $row['highest_bid_price'];  
+            $num_bids = $row['num_bids'];  
+            $end_date = $row['endTime'];
+            $category_name = $row['name'];
+            print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date, $category_name);
     endwhile;
     ?>
 
