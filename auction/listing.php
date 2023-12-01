@@ -65,6 +65,8 @@
       $end_time = $row['endTime']; 
       $sellerId = $row['sellerId'];
       $item_status = $row['itemStatus'];
+      $leading_buyer_first_name = $row['leading_buyer_first_name'];
+      $leading_buyer_last_name = $row['leading_buyer_last_name'];
       $leading_buyer_name = $row['leading_buyer_first_name'] . " " . $row['leading_buyer_last_name'];
       $starting_price = $row['startingPrice'];
   endwhile;
@@ -134,7 +136,8 @@
 <?php if ($now > $end_time_formatted): ?>
      This auction ended <?php echo"{$end_time_formatted->format('Y-m-d H:i:s')}" ?>
      <p class="lead">Starting price: £<?php echo(number_format($starting_price, 2)); ?></p><p class="lead">Item Status: <?php echo($item_status); ?></p>
-     <?php if ($leading_buyer_name = ' '): ?> 
+     <?php if ($leading_buyer_first_name == ' '): 
+      echo "winner:".$leading_buyer_first_name;?>
      <?php else: ?>
       <p class="lead">Final price: £<?php echo(number_format($current_price, 2)); echo" by " . $leading_buyer_name ?></p>
      <?php endif ?>

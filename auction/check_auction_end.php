@@ -17,7 +17,9 @@
             i.reservedPrice,
             i.startingPrice,
             b.current_price,
-            b.id AS bid_id
+            b.id AS bid_id,
+            buyer.firstName AS won_by_first_name,
+            buyer.lastName AS Won_by_last_name
         FROM Item AS i
         LEFT JOIN
             (SELECT 
@@ -30,6 +32,7 @@
             ORDER BY current_price DESC) AS b 
         ON b.itemId = i.id
         JOIN User AS seller ON seller.id = i.sellerId
+        JOIN User AS buyer ON buyer.id = b.buyerId
         WHERE i.itemStatus = 'Open'
         AND i.endTime < '$time'
         LIMIT 1
@@ -49,15 +52,26 @@
             $reserved_price = $row['reservedPrice'];
             $starting_price = $row['startingPrice'];
             $current_price = $row['current_price'];
+            $won_by = $row['won_by_first_name'] . " " . $row['won_by_last_name'];
             $bid_status = 'Lost';
             $item_status = 'Closed-No-bid';
             $won_bid_id = 000;
             if ($current_price > $starting_price && empty($reserved_price) && !empty($current_price)){
                 $item_status = 'Closed-Won';
                 $won_bid_id = $row['bid_id'];
+                $q2 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($seller_id, $item_id, 'Auction Close', '$time', 'Auction for $item_title ended as Closed-Won and is won by $won_by.')
+                ";
             } elseif ($current_price > $starting_price && $current_price > $reserved_price && !empty($reserved_price) && !empty($current_price)){
                 $item_status = 'Closed-Won';
                 $won_bid_id = $row['bid_id'];
+                $q2 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($seller_id, $item_id, 'Auction Close', '$time', 'Auction for $item_title ended as Closed-Won and is won by $won_by.')";
+            }
+            else{
+                $q2 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($seller_id, $item_id, 'Auction Close', '$time', 'Auction for $item_title ended as $item_status')
+                ";
             }
             // echo"<br> WON_Bid_ID: $won_bid_id";
             // echo"<br> Item Status: $item_status";
@@ -65,9 +79,7 @@
             update_item_status($item_id, $item_status);
 
 // create auction close notification for seller
-            $q2 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
-            VALUES ($seller_id, $item_id, 'Auction Close', '$time', 'Auction for $item_title ended as $item_status')
-            ";
+
             // echo"<br> Q: $q2 <br>";
             if (mysqli_query($con, $q2)) {
               $last_id = mysqli_insert_id($con);
