@@ -67,6 +67,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         (SELECT DISTINCT itemId
         FROM bid
         WHERE buyerId = $user_id)
+    AND itemStatus = 'Open'
 ";
 
 $sql = "SELECT i.title, i.id AS itemId, i.description,
@@ -82,6 +83,7 @@ WHERE c.id IN (SELECT DISTINCT c.categoryId
       FROM WatchList w
       JOIN Item_Category c ON w.itemId = c.itemId
       WHERE w.userId = $user_id)
+AND itemStatus = 'Open'
 GROUP BY i.id, c.name
 LIMIT 5";
 
@@ -161,7 +163,7 @@ $max_page = ceil($row_num_items / $results_per_page);
   if ($curr_page != 1) {
     echo('
     <li class="page-item">
-      <a class="page-link" href="mylistings.php?' . $querystring . 'page=' . ($curr_page - 1) . '" aria-label="Previous">
+      <a class="page-link" href="recommendations.php?' . $querystring . 'page=' . ($curr_page - 1) . '" aria-label="Previous">
         <span aria-hidden="true"><i class="fa fa-arrow-left"></i></span>
         <span class="sr-only">Previous</span>
       </a>
