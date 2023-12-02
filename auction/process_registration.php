@@ -25,7 +25,7 @@
         # check if user exists
         $query = "SELECT *
                     FROM User
-                    WHERE email = '$email'";
+                    WHERE id = '$email'";
         $users = mysqli_query($con, $query) or die('Error making select users query' . mysql_error());
         $row_cnt = mysqli_num_rows($users);
         // [DEBUG]
@@ -60,7 +60,7 @@
             //     $is_seller = 1;
             // }
             try{
-                $insert = "INSERT INTO User (firstName, lastName, password, email, accountType)
+                $insert = "INSERT INTO User (firstName, lastName, password, id, accountType)
                 VALUES ('$first_name', '$last_name', '$hash', '$email', '$account_type')";
                 $res = mysqli_query($con, $insert);
                 header("Location: reg_success.php");
