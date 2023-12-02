@@ -23,7 +23,7 @@
     else if ($_POST['functionname'] == "remove_from_watchlist") {
         // TODO: Update database and return success/failure.
         $q = "DELETE FROM WatchList
-              WHERE userId = $user_id 
+              WHERE userId = '$user_id' 
               AND itemId = $item_id
         ";
     }

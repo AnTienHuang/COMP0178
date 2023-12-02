@@ -40,8 +40,7 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     try{
         $q_select_user = "SELECT *
                             FROM User
-                            WHERE email = '$email'
-                            LIMIT 1
+                            WHERE id = '$email'
                             ";
         $res = mysqli_query($con, $q_select_user) or die('Error matching user login credential' . mysql_error());
         if(mysqli_num_rows($res) > 0){

@@ -40,7 +40,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
                 LEFT JOIN
                     Category c ON ic.categoryId = c.id
                 WHERE
-                    w.userId = $user_id
+                    w.userId = '$user_id'
                 GROUP BY
                     w.itemId, i.title, i.description, i.startTime, i.endTime, c.name";
 

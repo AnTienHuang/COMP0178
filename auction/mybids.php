@@ -105,11 +105,11 @@ else{
       JOIN User u ON b.buyerId = u.id
       LEFT JOIN Bid b2 ON b.itemId = b2.itemId
       LEFT JOIN item i ON i.id = b.itemId
-      WHERE b.buyerId = $user_id $status_condition
+      WHERE b.buyerId = '$user_id' $status_condition
       AND (b.itemId, b.bidTime) IN (
             SELECT itemId, MAX(bidTime)
             FROM Bid
-            WHERE buyerId = $user_id
+            WHERE buyerId = '$user_id'
             GROUP BY itemId
         )
       GROUP BY b.id, b.price, b.bidStatus, u.firstName, u.lastName, i.endTime

@@ -124,7 +124,7 @@
             WHERE title != '' $status_condition
           ) i ON ic.itemId = i.id
           LEFT JOIN Bid bid ON i.id = bid.itemId
-          WHERE i.sellerId = $user_id $keyword_condition 
+          WHERE i.sellerId = '$user_id' $keyword_condition 
           GROUP BY ic.itemId, ic.categoryId, c.name
           $order_by_condition
     ";

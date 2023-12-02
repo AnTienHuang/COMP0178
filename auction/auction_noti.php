@@ -58,7 +58,7 @@ else{
   $q = "SELECT 
         *
         FROM Notification
-        Where userID = $user_id
+        Where userID = '$user_id'
         AND notificationType LIKE 'Auction%'
       $order_by_condition";
   $notifications = mysqli_query($con, $q);

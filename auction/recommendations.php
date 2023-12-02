@@ -47,7 +47,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
               MAX(bidTime),
               buyerId
               FROM bid
-              WHERE buyerId = $user_id
+              WHERE buyerId = '$user_id'
               AND bidStatus <> 'Won'
               GROUP BY itemId
               ORDER BY MAX(bidTime) DESC
@@ -66,11 +66,11 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     WHERE id NOT IN 
         (SELECT DISTINCT itemId
         FROM bid
-        WHERE buyerId = $user_id)
+        WHERE buyerId = '$user_id')
     AND id NOT IN
         (SELECT DISTINCT itemId
         FROM WatchList
-        WHERE userId = $user_id)
+        WHERE userId = '$user_id')
     AND itemStatus = 'Open'
 ";
 
@@ -86,12 +86,12 @@ LEFT JOIN Bid b ON i.id = b.itemId
 WHERE c.id IN (SELECT DISTINCT c.categoryId
       FROM WatchList w
       JOIN Item_Category c ON w.itemId = c.itemId
-      WHERE w.userId = $user_id)
+      WHERE w.userId = '$user_id')
 AND itemStatus = 'Open'
 AND i.id NOT IN
         (SELECT DISTINCT itemId
         FROM WatchList
-        WHERE userId = $user_id)
+        WHERE userId = '$user_id')
 GROUP BY i.id, c.name
 LIMIT 5";
 

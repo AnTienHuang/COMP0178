@@ -87,7 +87,7 @@
     $q0 = "SELECT * 
            FROM WatchList
            WHERE itemId = $item_id
-           AND userId = $user_id 
+           AND userId = '$user_id' 
            ";
     $r = mysqli_query($con, $q0);
     if(mysqli_num_rows($r) > 0){
