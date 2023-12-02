@@ -67,6 +67,10 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         (SELECT DISTINCT itemId
         FROM bid
         WHERE buyerId = $user_id)
+    AND id NOT IN
+        (SELECT DISTINCT itemId
+        FROM WatchList
+        WHERE userId = $user_id)
     AND itemStatus = 'Open'
 ";
 
@@ -84,6 +88,10 @@ WHERE c.id IN (SELECT DISTINCT c.categoryId
       JOIN Item_Category c ON w.itemId = c.itemId
       WHERE w.userId = $user_id)
 AND itemStatus = 'Open'
+AND i.id NOT IN
+        (SELECT DISTINCT itemId
+        FROM WatchList
+        WHERE userId = $user_id)
 GROUP BY i.id, c.name
 LIMIT 5";
 

@@ -45,6 +45,7 @@
     else{
         // echo"<br>";
         // echo"q: $q";
+    // create auction close notification for seller
         while($row = mysqli_fetch_assoc($items)) :
             $item_id = $row['item_id'];
             $item_title = $row['title'];
@@ -78,7 +79,6 @@
             update_bids_status($item_id, $won_bid_id);
             update_item_status($item_id, $item_status);
 
-// create auction close notification for seller
 
             // echo"<br> Q: $q2 <br>";
             if (mysqli_query($con, $q2)) {
@@ -112,8 +112,8 @@
                 $bid_id = $bid['id'];
                 $message = "Your bid for $item_title ended as $bid_status";
             
-                $q3 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message, bidID) 
-                VALUES ($buyer_id, $item_id, 'Auction Close', '$time', '$message', $bid_id)
+                $q3 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($buyer_id, $item_id, 'Bid Close', '$time', '$message')
                 ";
               
                 if (mysqli_query($con, $q3)) {

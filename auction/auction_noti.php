@@ -59,11 +59,11 @@ else{
         *
         FROM Notification
         Where userID = $user_id
-        AND notificationType = 'Auction Close'
+        AND notificationType LIKE 'Auction%'
       $order_by_condition";
   $notifications = mysqli_query($con, $q);
   if(mysqli_num_rows($notifications) == 0){
-    echo"There is no notification yet.";
+    echo"There is no auction notification yet.";
     exit();
   }
   elseif(!$notifications){

@@ -59,8 +59,8 @@
             }
             
         // create notifications for winning bid
-            $q3 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message, bidID) 
-            VALUES ($buyer_id, $item_id, 'Auction Update', '$now', 'Your bid for $item_title at £$new_bid_price is Winning', $new_bid_id)
+            $q3 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+            VALUES ($buyer_id, $item_id, 'Bid Update', '$now', 'Your bid for $item_title at £$new_bid_price is Winning')
             ";
             if(mysqli_query($con, $q3)){
                 $success = true;
@@ -79,10 +79,10 @@
                     WHERE bid_main.itemId = $item_id
                     AND bid_main.id != $new_bid_id
                     AND bid_main.id = (
-                    SELECT id
-                    FROM Bid
-                    WHERE buyerId = bid_main.buyerId AND itemId = $item_id
-                    ORDER BY price DESC
+                        SELECT id
+                        FROM Bid
+                        WHERE buyerId = bid_main.buyerId AND itemId = $item_id
+                        ORDER BY price DESC
                     LIMIT 1)
             ";
 
@@ -92,8 +92,8 @@
                 $losing_bid_id = $losing_bid['id'];
                 $losing_bid_price = $losing_bid['price'];
 
-                $q5 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message, bidID) 
-                VALUES ($losing_buyer_id, $item_id, 'Auction Update', '$now', 'Your bid for $item_title at £$losing_bid_price is Losing (Current price: $new_bid_price)', $losing_bid_id)
+                $q5 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($losing_buyer_id, $item_id, 'Bid Update', '$now', 'Your bid for $item_title at £$losing_bid_price is Losing (Current price: $new_bid_price)')
                 ";
                 if(mysqli_query($con, $q5)){
                     $success = true;
@@ -125,12 +125,33 @@
                     exit();
                 }           
             endwhile;
+        // create notification for seller
+            $q8 = "SELECT sellerId 
+                    FROM Item
+                    WHERE id = $item_id
+            ";
+            $items = mysqli_query($con, $q8);
+            while($item = mysqli_fetch_assoc($items)):
+                $seller_id = $item['sellerId'];
+
+                $q9 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($seller_id, $item_id, 'Auction Update', '$now', 'The item \'$item_title\' received a new bid at £$new_bid_price')
+                ";
+                if(mysqli_query($con, $q9)){
+                    $success = true;
+                    // echo "New record created successfully. Last inserted ID is: " . $last_id;
+                }else{
+                    echo "Error: " . $q9 . "<br>". mysqli_error($con);
+                    exit();
+                }           
+            endwhile;
             if (!$success){
                 echo('<br><div class="text-center">An error occured when placing bid, please try again.</div><br><div class="text-center"><a href="listing.php?item_id=' . $item_id . '">Go back.</a></div>');
                 exit();
             }else{
                 echo('<br><div class="text-center">Bid placed successfully.</div><br><div class="text-center"><a href="browse.php">Browse other items.</a></div>');
             }
+
         }
 
     }
