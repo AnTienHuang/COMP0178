@@ -46,7 +46,7 @@
             <select class="form-control" name="category">
               <option value="">---select a category---</option>
             <?php 
-                $result=mysqli_query($con,'SELECT id,name FROM category'); 
+                $result=mysqli_query($con,'SELECT id, name FROM category'); 
                 while($row=mysqli_fetch_assoc($result)) { 
                     echo "<option value='$row[id]'>$row[name]</option>"; 
                 } 

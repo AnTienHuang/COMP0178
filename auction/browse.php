@@ -37,7 +37,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         <select class="form-control" name="cat">
           <option value=""> Search in all category </option>
           <?php 
-              $result=mysqli_query($con,'SELECT id,name FROM category'); 
+              $result=mysqli_query($con,'SELECT id, name FROM category'); 
               while($row=mysqli_fetch_assoc($result)) { 
                   echo "<option value='$row[id]'>$row[name]</option>"; 
               } 

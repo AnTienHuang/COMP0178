@@ -19,7 +19,7 @@
             b.current_price,
             b.id AS bid_id,
             buyer.firstName AS won_by_first_name,
-            buyer.lastName AS Won_by_last_name
+            buyer.lastName AS won_by_last_name
         FROM Item AS i
         LEFT JOIN
             (SELECT 

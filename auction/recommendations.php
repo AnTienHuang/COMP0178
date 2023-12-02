@@ -72,13 +72,18 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         FROM WatchList
         WHERE userId = '$user_id')
     AND itemStatus = 'Open'
+    ORDER BY num_of_bids desc
+    LIMIT 10
 ";
 
-$sql = "SELECT i.title, i.id AS itemId, i.description,
-MAX(b.price) AS highest_bid_price,
-COUNT(b.id) AS num_of_bids,
-i.endTime,
-c.name AS category_name
+$sql = "SELECT 
+        i.title, 
+        i.id AS itemId, 
+        i.description,
+        MAX(b.price) AS highest_bid_price,
+        COUNT(b.id) AS num_of_bids,
+        i.endTime,
+        c.name AS category_name
 FROM Item i
 JOIN Item_Category ic ON i.id = ic.itemId
 JOIN Category c ON ic.categoryId = c.id
@@ -92,8 +97,13 @@ AND i.id NOT IN
         (SELECT DISTINCT itemId
         FROM WatchList
         WHERE userId = '$user_id')
+AND i.id NOT IN 
+        (SELECT DISTINCT itemId
+        FROM bid
+        WHERE buyerId = '$user_id')
 GROUP BY i.id, c.name
-LIMIT 5";
+ORDER BY num_of_bids
+LIMIT 10";
 
 $items = mysqli_query($con, $q);
 $row_num_items = mysqli_num_rows($items);

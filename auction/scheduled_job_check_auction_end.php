@@ -13,30 +13,33 @@
     // 2023-11-22 21:08:00
 
     $q = "SELECT
-            i.id AS item_id,
-            i.sellerId, 
-            i.itemStatus,
-            i.endTime,
-            i.title,
-            i.reservedPrice,
-            i.startingPrice,
-            b.current_price,
-            b.id AS bid_id
-        FROM Item AS i
-        LEFT JOIN
-            (SELECT 
-                MAX(price) AS current_price,
-                buyerId,
-                id,
-                itemId
-            FROM Bid
-            GROUP BY itemId, buyerId, id
-            ORDER BY current_price DESC) AS b 
-        ON b.itemId = i.id
-        JOIN User AS seller ON seller.id = i.sellerId
-        WHERE i.itemStatus = 'Open'
-        AND i.endTime < '$time'
-        LIMIT 1
+    i.id AS item_id,
+    i.sellerId, 
+    i.itemStatus,
+    i.endTime,
+    i.title,
+    i.reservedPrice,
+    i.startingPrice,
+    b.current_price,
+    b.id AS bid_id,
+    buyer.firstName AS won_by_first_name,
+    buyer.lastName AS won_by_last_name
+FROM Item AS i
+LEFT JOIN
+    (SELECT 
+        MAX(price) AS current_price,
+        buyerId,
+        id,
+        itemId
+    FROM Bid
+    GROUP BY itemId, buyerId, id
+    ORDER BY current_price DESC) AS b 
+ON b.itemId = i.id
+JOIN User AS seller ON seller.id = i.sellerId
+JOIN User AS buyer ON buyer.id = b.buyerId
+WHERE i.itemStatus = 'Open'
+AND i.endTime < '$time'
+LIMIT 1
     ";
 
     $items = mysqli_query($con, $q);
@@ -54,26 +57,34 @@
             $reserved_price = $row['reservedPrice'];
             $starting_price = $row['startingPrice'];
             $current_price = $row['current_price'];
+            $won_by = $row['won_by_first_name'] . " " . $row['won_by_last_name'];
             $bid_status = 'Lost';
             $item_status = 'Closed-No-bid';
             $won_bid_id = 000;
             if ($current_price > $starting_price && empty($reserved_price) && !empty($current_price)){
                 $item_status = 'Closed-Won';
                 $won_bid_id = $row['bid_id'];
+                $q2 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($seller_id, $item_id, 'Auction Close', '$time', 'Auction for $item_title ended as Closed-Won and is won by $won_by.')
+                ";
             } elseif ($current_price > $starting_price && $current_price > $reserved_price && !empty($reserved_price) && !empty($current_price)){
                 $item_status = 'Closed-Won';
                 $won_bid_id = $row['bid_id'];
+                $q2 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($seller_id, $item_id, 'Auction Close', '$time', 'Auction for $item_title ended as Closed-Won and is won by $won_by.')";
             }
-            echo"<br> WON_Bid_ID: $won_bid_id";
-            echo"<br> Item Status: $item_status";
+            else{
+                $q2 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($seller_id, $item_id, 'Auction Close', '$time', 'Auction for $item_title ended as $item_status')
+                ";
+            }
+            // echo"<br> WON_Bid_ID: $won_bid_id";
+            // echo"<br> Item Status: $item_status";
             update_bids_status($item_id, $won_bid_id);
             update_item_status($item_id, $item_status);
 
-// create auction close notification for seller
-            $q2 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
-            VALUES ($seller_id, $item_id, 'Auction Close', '$time', 'Auction for $item_title ended as $item_status')
-            ";
-            echo"<br> Q: $q2 <br>";
+
+            // echo"<br> Q: $q2 <br>";
             if (mysqli_query($con, $q2)) {
               $last_id = mysqli_insert_id($con);
               $success = true;
@@ -96,7 +107,7 @@
                     ORDER BY price DESC
                     LIMIT 1)
             ";
-            echo"<br> Q: $q3 <br>";
+            // echo"<br> Q: $q3 <br>";
         
             $bids = mysqli_query($con, $q3);
             while($bid = mysqli_fetch_assoc($bids)) :
@@ -105,8 +116,8 @@
                 $bid_id = $bid['id'];
                 $message = "Your bid for $item_title ended as $bid_status";
             
-                $q3 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message, bidID) 
-                VALUES ($buyer_id, $item_id, 'Auction Close', '$time', '$message', $bid_id)
+                $q3 = "INSERT INTO Notification (userId, itemId, notificationType, createdTime, message) 
+                VALUES ($buyer_id, $item_id, 'Bid Close', '$time', '$message')
                 ";
               
                 if (mysqli_query($con, $q3)) {
@@ -121,5 +132,3 @@
     }
     mysqli_close($con);
     ?>
-
-
