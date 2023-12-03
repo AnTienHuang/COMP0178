@@ -12,3 +12,9 @@ CREATE TABLE Item_Category (
        ON DELETE CASCADE
        ON UPDATE CASCADE
 )Engine=InnoDB
+
+INSERT INTO Item_Category(itemId, categoryId)
+SELECT id, 1
+FROM Item
+WHERE startTime = '2023-01-01 00:00:00'
+AND sellerId = 'test@email.com'

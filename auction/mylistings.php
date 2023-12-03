@@ -128,7 +128,6 @@
           GROUP BY ic.itemId, ic.categoryId, c.name
           $order_by_condition
     ";
-  
     $items = mysqli_query($con, $q);
     $row_num = mysqli_num_rows($items);
     if(mysqli_num_rows($items) == 0){

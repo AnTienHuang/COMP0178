@@ -17,3 +17,6 @@ CREATE TABLE Item
 )
 
 ENGINE = InnoDB;
+
+INSERT INTO Item(sellerId, title, description, itemStatus, startTime, endTime, startingPrice)
+VALUES ('test@email.com', 'Sample Item', 'Sample description', 'Open', '2023-01-01 00:00:00', '2024-11-22 21:08:00', 100)

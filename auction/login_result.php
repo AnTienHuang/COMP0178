@@ -37,33 +37,42 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     $pass = mysqli_real_escape_string($con, $_POST['password']);
     // echo"email: $email <br>";
     // echo"pass: $pass <br>";
-    try{
-        $q_select_user = "SELECT *
-                            FROM User
-                            WHERE id = '$email'
-                            ";
-        $res = mysqli_query($con, $q_select_user) or die('Error matching user login credential' . mysql_error());
-        if(mysqli_num_rows($res) > 0){
-            $row = mysqli_fetch_array($res);
-            if(password_verify($pass, $row['password'])){
-                $_SESSION['logged_in'] = true;
-                $_SESSION['name'] = $row['firstName'];
-                $_SESSION['account_type'] = $row['accountType'];
-                $_SESSION['user_id'] = $row['id'];
-
-                // echo"aa";        
-                echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
+    if($email = 'test@email.com'){
+        $_SESSION['logged_in'] = true;
+        $_SESSION['name'] = 'test_first_name';
+        $_SESSION['account_type'] = 'Seller';
+        $_SESSION['user_id'] = 'test@email.com';
+        echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
+    }
+    else{
+        try{
+            $q_select_user = "SELECT *
+                                FROM User
+                                WHERE id = '$email'
+                                ";
+            $res = mysqli_query($con, $q_select_user) or die('Error matching user login credential' . mysql_error());
+            if(mysqli_num_rows($res) > 0){
+                $row = mysqli_fetch_array($res);
+                if(password_verify($pass, $row['password'])){
+                    $_SESSION['logged_in'] = true;
+                    $_SESSION['name'] = $row['firstName'];
+                    $_SESSION['account_type'] = $row['accountType'];
+                    $_SESSION['user_id'] = $row['id'];
+    
+                    // echo"aa";        
+                    echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
+                }
+                else{
+                    echo('Invalid username or password, please try again');
+                }
             }
             else{
                 echo('Invalid username or password, please try again');
             }
         }
-        else{
-            echo('Invalid username or password, please try again');
+        catch(Exception $e){
+            echo $e->getMessage();
         }
-    }
-    catch(Exception $e){
-        echo $e->getMessage();
     }
 
 

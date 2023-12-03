@@ -14,8 +14,5 @@ CREATE TABLE User
 )
 ENGINE = InnoDB;
 
--- INSERT INTO Users (username, password) VALUES
--- ('someone', SHA('password'))
-
--- SELECT username FROM Users WHERE username =
--- '$user' AND password = SHA('$password')
+INSERT INTO User (id, firstName, lastName, password, accountType) 
+VALUES('test@email.com', 'test_first_name', 'test_last_name', password('aaa'), 'Seller')
