@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-12-03T11:52:53.641Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="6aOnDqttWEhh1RAoMp3G" version="22.1.5" type="github">
+<mxfile host="app.diagrams.net" modified="2023-12-03T11:53:59.175Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="HJU8BdBXbQAZwHhbOvoz" version="22.1.5" type="github">
   <diagram id="R2lEEEUBdFMjLlhIrx00" name="Page-1">
     <mxGraphModel dx="2954" dy="1347" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
       <root>
@@ -386,8 +386,8 @@
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Su_itDAB91GU6_1DL8yV-3" value="(userType = Seller)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-          <mxGeometry x="-83" y="364" width="120" height="26" as="geometry" />
+        <mxCell id="Su_itDAB91GU6_1DL8yV-3" value="(accountType = Seller)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="-112" y="365" width="138" height="26" as="geometry" />
         </mxCell>
         <mxCell id="2IQy5SRdhi1VyMQDP-Jv-20" value="Item_Category" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;" parent="1" vertex="1">
           <mxGeometry x="-428" y="434" width="273" height="121" as="geometry" />
