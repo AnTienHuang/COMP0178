@@ -35,8 +35,8 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     // echo"aaa";
     $email = mysqli_real_escape_string($con, $_POST['email']);
     $pass = mysqli_real_escape_string($con, $_POST['password']);
-    // echo"email: $email <br>";
-    // echo"pass: $pass <br>";
+
+    // sample login
     if($email = 'test@email.com'){
         $_SESSION['logged_in'] = true;
         $_SESSION['name'] = 'test_first_name';
@@ -45,6 +45,7 @@ if(isset($_POST['email']) && isset($_POST['password'])){
         echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
     }
     else{
+        // normal login
         try{
             $q_select_user = "SELECT *
                                 FROM User
