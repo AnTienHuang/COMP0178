@@ -7,8 +7,9 @@ How to setup
     2. Category
     3. Item
     4. Item_Category
-    5. BId
+    5. Bid
     6. WatchList
+    7. Notification
 
 3. Create a user 'example'@'localhost' with no password
 4. Grant all privileges to this user
